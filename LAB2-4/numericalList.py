@@ -1,5 +1,7 @@
 __author__ = 'sorynsoo'
 import re
+import math
+import operator
 
 def parse(lst, str):
     '''
@@ -56,13 +58,12 @@ def computeRemove(lst, str):
         str = str.split("to")
         i1 = int(str[0])
         i2 = int(str[1])
-        if i1 > len(lst) or i1 < 0 or i2 > len(lst) or i2 < 0 or i1 > i2:
-          raise RuntimeError("Your position does not exist")
+        isPositionValid(lst, i1)
+        isPositionValid(lst, i2)
         del lst[i1:i2]
     else:
         i1 = int(str)
-        if i1 >= len(lst) or i1 < 0:
-            raise RuntimeError("Your position does not exist")
+        isPositionValid(lst, i1)
         del lst[i1]
 
 
@@ -99,15 +100,14 @@ def computeListRealInRange(lst, str):
     :return: calls a function which prints only the real elements in the index range given
     '''
     str = str[5:]
-    print(str)
     str = str.split("to")
     i1 = int(str[0])
     i2 = int(str[1])
 
-    if i1 > len(lst) or i1 < 0 or i2 > len(lst) or i2 < 0 or i1 > i2:
-          raise RuntimeError("Your position does not exist")
-    newLst = []
+    isPositionValid(lst, i1)
+    isPositionValid(lst, i2)
 
+    newLst = []
     for i in range(i1, i2):
         crt = []
         crt.append(lst[i][0]);
@@ -115,6 +115,83 @@ def computeListRealInRange(lst, str):
         newLst.append(crt)
 
     computePrint(newLst)
+
+def computeListModuloIf(lst, str):
+    '''
+    :param lst:  list of complex numbers
+    :param str:  string with user input command
+    :return: calls a function which prints only the Modulo elements that respect a propriety
+    '''
+    validCondition = {"<" : operator.lt, ">" : operator.gt, "=" : operator.eq}
+    str = str[7:]
+    str = str.split()
+
+    op = str[0]
+    number = int(str[1])
+
+    newLst = []
+    for crt in lst:
+        if validCondition[op](int(moduloOfComplexNumber(crt)), number) == True:
+            newLst.append(crt)
+
+    computePrint(newLst)
+
+
+def computeSumInRange(lst, str):
+    '''
+    :param lst: list of complex numbers
+    :param str: string with user input command
+    :return: prints the sum of complex numbers in a range
+    '''
+    str = str.split("to")
+    i1 = int(str[0])
+    i2 = int(str[1])
+
+    isPositionValid(lst, i1)
+    isPositionValid(lst, i2)
+
+    realPart = 0
+    imaginaryPart = 0
+
+    for i in range(i1, i2):
+        realPart = realPart + lst[i][0]
+        imaginaryPart = imaginaryPart + lst[i][1]
+
+    printComplexNumber([realPart, imaginaryPart])
+
+
+def computeProductInRange(lst, str):
+    '''
+    :param lst: list of complex numbers
+    :param str: string with user input command
+    :return: prints the product of complex numbers in a range
+    '''
+    str = str.split("to")
+    i1 = int(str[0])
+    i2 = int(str[1])
+
+    isPositionValid(lst, i1)
+    isPositionValid(lst, i2)
+
+    realPart = 1
+    imaginaryPart = 1
+
+    for i in range(i1, i2):
+        realPart = realPart * lst[i][0]
+        imaginaryPart = imaginaryPart * lst[i][1]
+
+    printComplexNumber([realPart, imaginaryPart])
+
+def isPositionValid(lst, poz):
+    if poz > len(lst) or poz < 0:
+          raise RuntimeError("Your position does not exist")
+
+def moduloOfComplexNumber(complexNumber):
+    '''
+    :param number: a list with 2 elements, first is the real part, the second is the imaginary part
+    :return: the modulo of that element
+    '''
+    return math.sqrt(complexNumber[0] * complexNumber[0] + complexNumber[1] * complexNumber[1])
 
 
 
@@ -136,19 +213,24 @@ def parseComplexNumber(str):
 
 
 '''
-IO PARTS:
+IO PART:
 '''
 
 commands = [
             {"regex": re.compile(r"^(add)[ ]+\d+[+]\d+[i]$"), "function" : computeSum},
-            {"regex": re.compile(r"^add[\s]+\d+[+]\d+i[\s]+at[\s]+[\d]+$"), "function" : computeInsert},
-            {"regex": re.compile(r"^remove[\s]+[\d]+$"), "function" : computeRemove},
-            {"regex": re.compile(r"^remove[\s]+[\d]+[\s]+to[\s]+[\d]+$"), "function" : computeRemove},
-            {"regex": re.compile(r"^replace[\s]+\d+[+]\d+i[\s]with[\s]\d+[+]\d+i$"), "function" : computeReplace},
+            {"regex": re.compile(r"^add[\s]\d+[+]\d+i[\s]at[\s][\d]+$"), "function" : computeInsert},
+            {"regex": re.compile(r"^remove[\s][\d]+$"), "function" : computeRemove},
+            {"regex": re.compile(r"^remove[\s][\d]+[\s]to[\s][\d]+$"), "function" : computeRemove},
+            {"regex": re.compile(r"^replace[\s]\d+[+]\d+i[\s]with[\s]\d+[+]\d+i$"), "function" : computeReplace},
             {"regex": re.compile(r"^list$"), "function" : computeListAll},
-            {"regex": re.compile(r"^list[\s]+real[\s]+[\d]+[\s]+to[\s]+[\d]+$"), "function": computeListRealInRange}
-
+            {"regex": re.compile(r"^list[\s]real[\s][\d]+[\s]to[\s][\d]+$"), "function": computeListRealInRange},
+            {"regex": re.compile(r"^list[\s]modulo[\s][<>=][\s][\d]+$"), "function": computeListModuloIf},
+            {"regex": re.compile(r"^sum[\s][\d]+[\s]to[\s][\d]+$"), "function": computeSumInRange},
+            {"regex": re.compile(r"^product[\s][\d]+[\s]to[\s][\d]+$"), "function": computeProductInRange}
            ]
+
+def printComplexNumber(number):
+    print(str(number[0]) + " + " + str(number[1]) + "i")
 
 def computePrint(lst):
     printMSG = ""
@@ -156,7 +238,7 @@ def computePrint(lst):
         if(lst[i][1] != 0):
             printMSG = printMSG + str(lst[i][0]) + " + " + str(lst[i][1]) +"i";
         else:
-            printMSG = printMSG + str[lst[i][0]]
+            printMSG = printMSG + str(lst[i][0])
         if i < len(lst) - 1:
             printMSG = printMSG + ", "
 
@@ -175,6 +257,21 @@ def printMenu():
     6.Exit
     """)
 
+'''
+TESTING PART:
+'''
+
+def testing(lst):
+    fillValues(lst)
+
+def fillValues(lst):
+    lst.append([1,1])
+    lst.append([2,2])
+    lst.append([3,3])
+    lst.append([4,4])
+    lst.append([5,5])
+    lst.append([6,6])
+    lst.append([7,7])
 
 def compute():
     '''
@@ -189,7 +286,7 @@ def compute():
     inputValue = input("Give an operation: ")
     while(inputValue != "exit"):
         try:
-            print(parse(lst, inputValue))
+            parse(lst, inputValue)
         except RuntimeError as e:
             print(e)
 
@@ -197,10 +294,3 @@ def compute():
 
 
 compute()
-
-
-def testing(lst):
-    fillValues(lst)
-
-def fillValues(lst):
-    lst.append([1,1], [2,2], [3,3], [4,4], [5,5], [6,6], [7,7])
