@@ -479,7 +479,7 @@ def compute():
     '''
     lst = []
     printMenu()
-    testing(lst)
+    #testing(lst)
 
     inputValue = input("Give an operation: ")
     while(inputValue != "exit"):
