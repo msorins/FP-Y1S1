@@ -2,9 +2,11 @@ __author__ = 'sorynsoo'
 import re
 import math
 import operator
+import copy
 
-def parse(lst, str):
+def parse(lstState, lst, str):
     '''
+    :param lstState: the list of states
     :param lst: list of complex numbers
     :param str: string with current user input command ready to be parsed
     :return: the list with complex numbers
@@ -17,26 +19,34 @@ def parse(lst, str):
     isOk = False
     for crt in commands:
         if crt["regex"].match(str):
-          crt["function"](lst, str[len(command):])
-          isOk = True
-          break
+            if crt["returns"] == True:
+                lst = crt["function"](lstState, lst, str[len(command):])
+            else:
+                crt["function"](lst, str[len(command):])
+
+            isOk = True
+            break
 
     if not isOk:
       raise RuntimeError("Invalid command")
 
     return lst
 
-def computeAdd(lst, str):
+def computeAdd(lstState, lst, str):
     '''
+    :param lstState: the list of states
     :param lst:  list of complex numbers
     :param str:  string with user input command
     :return: the list of complex numbers with the current parsed number appended
     '''
     str = str.lstrip().rstrip()
     lst.append(parseComplexNumber(str))
+    addState(lstState,lst)
+    return lst
 
-def computeInsert(lst, str):
+def computeInsert(lstState, lst, str):
     '''
+    :param lstState: the list of states
     :param lst:  list of complex numbers
     :param str:  string with user input command
     :return: the list of complex numbers with a new number inserted into specific position
@@ -47,9 +57,12 @@ def computeInsert(lst, str):
 
     isPositionValid(lst, indexPosition)
     lst.insert(indexPosition, complexNumber)
+    addState(lstState,lst)
+    return  lst
 
-def computeRemove(lst, str):
+def computeRemove(lstState, lst, str):
     '''
+    :param lstState: the list of states
     :param lst:  list of complex numbers
     :param str:  string with user input command
     :return: the list of complex numbers with an element from a specific position removed
@@ -67,8 +80,12 @@ def computeRemove(lst, str):
         isPositionValid(lst, i1)
         del lst[i1]
 
-def computeReplace(lst, str):
+    addState(lstState,lst)
+    return lst
+
+def computeReplace(lstState, lst, str):
     '''
+    :param lstState: the list of states
     :param lst:  list of complex numbers
     :param str:  string with user input command
     :return: the list of complex numbers with a specific element replaced
@@ -82,6 +99,9 @@ def computeReplace(lst, str):
         lst[lst.index(firstNumber)] = secondNumber
     else:
         raise RuntimeError("Number is not in the list")
+
+    addState(lstState,lst)
+    return lst
 
 def computeListAll(lst, str):
     '''
@@ -108,10 +128,8 @@ def computeListRealInRange(lst, str):
 
     newLst = []
     for i in range(i1, i2):
-        crt = []
-        crt.append(lst[i][0]);
-        crt.append(0);
-        newLst.append(crt)
+        if lst[i][1] == 0:
+          newLst.append(lst[i])
 
     computePrint(newLst)
     return newLst
@@ -136,7 +154,6 @@ def computeListModuloIf(lst, str):
 
     computePrint(newLst)
     return newLst
-
 
 def computeSumInRange(lst, str):
     '''
@@ -185,6 +202,71 @@ def computeProductInRange(lst, str):
 
     return [realPart, imaginaryPart]
 
+def computeFilterReal(lstState, lst, str):
+    '''
+    :param lstState: the list of states
+    :param lst: list of complex numbers
+    :param str: string with user input command
+    :return: the list with only the real numbers remaining
+    '''
+    newLst = []
+    for crt in lst:
+        if crt[1] == 0:
+            newLst.append(crt)
+
+    lst = copy.deepcopy(newLst)
+    addState(lstState,lst)
+    return lst
+
+def computeFilterModuloIf(lstState, lst, str):
+    '''
+    :param lstState: the list of states
+    :param lst: list of complex numbers
+    :param str: string with user input command
+    :return: the list with only the complex number that respect the given conditiion
+    '''
+    validCondition = {"<" : operator.lt, ">" : operator.gt, "=" : operator.eq}
+    str = str[7:]
+    str = str.split()
+
+    op = str[0]
+    number = int(str[1])
+
+    newLst = []
+    for crt in lst:
+        if validCondition[op](int(moduloOfComplexNumber(crt)), number) == True:
+            newLst.append(crt)
+
+    lst = copy.deepcopy(newLst)
+    addState(lstState,lst)
+    return lst
+
+def addState(lstState, lst):
+    '''
+    :param lstState:  the list of states
+    :param lst:  the list of complex number
+    :return: adds a state to the current lstState
+    '''
+    lstState.append(copy.deepcopy(lst))
+
+def restoreState(lstState, lst, str):
+    '''
+    :param lstState: the list of states
+    :param lst: list of complex numbers
+    :param str: string with user input command
+    :return: the list restored to one state before
+    '''
+    if len(lstState) >= 2:
+        lst = lstState[len(lstState)-2]
+        lstState.pop()
+    elif len(lstState) == 1:
+        lst = []
+        lstState.pop()
+    else:
+        raise RuntimeError("Can't undo anymore")
+    return lst
+
+
 def isPositionValid(lst, poz):
     if poz > len(lst) or poz < 0:
           raise RuntimeError("Your position does not exist")
@@ -217,16 +299,19 @@ IO PART:
 '''
 
 commands = [
-            {"regex": re.compile(r"^(add)[ ]+\d+[+]\d+[i]$"), "function" : computeAdd},
-            {"regex": re.compile(r"^add[\s]\d+[+]\d+i[\s]at[\s][\d]+$"), "function" : computeInsert},
-            {"regex": re.compile(r"^remove[\s][\d]+$"), "function" : computeRemove},
-            {"regex": re.compile(r"^remove[\s][\d]+[\s]to[\s][\d]+$"), "function" : computeRemove},
-            {"regex": re.compile(r"^replace[\s]\d+[+]\d+i[\s]with[\s]\d+[+]\d+i$"), "function" : computeReplace},
-            {"regex": re.compile(r"^list$"), "function" : computeListAll},
-            {"regex": re.compile(r"^list[\s]real[\s][\d]+[\s]to[\s][\d]+$"), "function": computeListRealInRange},
-            {"regex": re.compile(r"^list[\s]modulo[\s][<>=][\s][\d]+$"), "function": computeListModuloIf},
-            {"regex": re.compile(r"^sum[\s][\d]+[\s]to[\s][\d]+$"), "function": computeSumInRange},
-            {"regex": re.compile(r"^product[\s][\d]+[\s]to[\s][\d]+$"), "function": computeProductInRange}
+            {"regex": re.compile(r"^(add)[ ]+\d+[+]\d+[i]$"), "function" : computeAdd, "returns": True},
+            {"regex": re.compile(r"^add[\s]\d+[+]\d+i[\s]at[\s][\d]+$"), "function" : computeInsert, "returns": True},
+            {"regex": re.compile(r"^remove[\s][\d]+$"), "function" : computeRemove, "returns": True},
+            {"regex": re.compile(r"^remove[\s][\d]+[\s]to[\s][\d]+$"), "function" : computeRemove, "returns": True},
+            {"regex": re.compile(r"^replace[\s]\d+[+]\d+i[\s]with[\s]\d+[+]\d+i$"), "function" : computeReplace, "returns": True},
+            {"regex": re.compile(r"^list$"), "function" : computeListAll, "returns": False},
+            {"regex": re.compile(r"^list[\s]real[\s][\d]+[\s]to[\s][\d]+$"), "function": computeListRealInRange, "returns": False},
+            {"regex": re.compile(r"^list[\s]modulo[\s][<>=][\s][\d]+$"), "function": computeListModuloIf, "returns": False},
+            {"regex": re.compile(r"^sum[\s][\d]+[\s]to[\s][\d]+$"), "function": computeSumInRange, "returns": False},
+            {"regex": re.compile(r"^product[\s][\d]+[\s]to[\s][\d]+$"), "function": computeProductInRange, "returns": False},
+            {"regex": re.compile(r"^filter real$"), "function": computeFilterReal, "returns": True},
+            {"regex": re.compile(r"^filter[\s]modulo[\s][<>=][\s][\d]+$"), "function": computeFilterModuloIf, "returns": True},
+            {"regex": re.compile(r"^undo$"), "function": restoreState, "returns": True}
            ]
 
 def printComplexNumber(number):
@@ -266,20 +351,20 @@ def printMenu():
 TESTING PART:
 '''
 
-def testing(lst):
-    testInit(lst)
-    testAdd(lst)
-    testInsert(lst)
-    testRemove(lst)
-    testRemoveRange(lst)
-    testReplace(lst)
-    testList(lst)
-    testListRealInRange(lst)
-    testListModuloIf(lst)
-    testSumInRange(lst)
-    testProductInRange(lst)
+def testing(lstState, lst):
+    testInit(lstState, lst)
+    testAdd(lstState, lst)
+    testInsert(lstState, lst)
+    testRemove(lstState, lst)
+    testRemoveRange(lstState, lst)
+    testReplace(lstState, lst)
+    testList(lstState, lst)
+    testListRealInRange(lstState, lst)
+    testListModuloIf(lstState, lst)
+    testSumInRange(lstState, lst)
+    testProductInRange(lstState, lst)
 
-def testInit(lst):
+def testInit(lstState, lst):
     lst.append([1,1])
     lst.append([2,2])
     lst.append([3,3])
@@ -288,153 +373,153 @@ def testInit(lst):
     lst.append([6,6])
     lst.append([7,7])
 
-def testAdd(lst):
-    parse(lst, "add 8+8i")
+def testAdd(lstState, lst):
+    parse(lstState, lst, "add 8+8i")
     assert [8,8] in lst
-    parse(lst, "add 9+9i")
+    parse(lstState, lst, "add 9+9i")
     assert [9,9] in lst
-    parse(lst, "add 10+10i")
+    parse(lstState, lst, "add 10+10i")
     assert [10,10] in lst
-    parse(lst, "add 10+10i")
+    parse(lstState, lst, "add 10+10i")
     assert lst.count([10,10]) == 2
-    parse(lst, "add 1+1i")
+    parse(lstState, lst, "add 1+1i")
     assert lst.count([1,1]) == 2
 
-def testInsert(lst):
-    parse(lst, "add 0+1i at 0")
+def testInsert(lstState, lst):
+    parse(lstState, lst, "add 0+1i at 0")
     assert lst.index([0,1]) == 0
-    parse(lst, "add 99+99i at 11")
+    parse(lstState, lst, "add 99+99i at 11")
     assert lst.index([99,99]) == 11
-    parse(lst, "add 999+999i at 11")
+    parse(lstState, lst, "add 999+999i at 11")
     assert lst.index([999,999]) == 11
 
     try:
-        parse(lst, "add 1-1i at 1")
+        parse(lstState, lst, "add 1-1i at 1")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "add 1+1j a 1")
+        parse(lstState, lst, "add 1+1j a 1")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "add 1+1i at 13312")
+        parse(lstState, lst, "add 1+1i at 13312")
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
-def testRemove(lst):
-    parse(lst, "remove 10")
+def testRemove(lstState, lst):
+    parse(lstState, lst, "remove 10")
     assert(lst.count([10,10]) == 1)
 
-    parse(lst, "remove 12")
+    parse(lstState, lst, "remove 12")
     assert([10,10] not in lst)
 
     try:
-        parse(lst, "remove -5")
+        parse(lstState, lst, "remove -5")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "remove -15")
+        parse(lstState, lst, "remove -15")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "remove 20")
+        parse(lstState, lst, "remove 20")
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
     try:
-        parse(lst, "remove 30")
+        parse(lstState, lst, "remove 30")
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
-def testRemoveRange(lst):
-    parse(lst, "remove 10 to 13")
+def testRemoveRange(lstState, lst):
+    parse(lstState, lst, "remove 10 to 13")
     assert [999,999] not in lst
     assert [99,99] not in lst
     assert lst.count([1,1]) == 1
-    parse(lst, "remove 0 to 1")
+    parse(lstState, lst, "remove 0 to 1")
     assert [0,1] not in lst
 
     try:
-        parse(lst, "remove 0 to -5")
+        parse(lstState, lst, "remove 0 to -5")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "remove 5 to 17")
+        parse(lstState, lst, "remove 5 to 17")
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
-def testReplace(lst):
-    parse(lst, "list")
-    parse(lst, "replace 9+9i with 10+10i")
+def testReplace(lstState, lst):
+    parse(lstState, lst, "list")
+    parse(lstState, lst, "replace 9+9i with 10+10i")
     assert [9,9] not in lst and [10,10] in lst
 
-    parse(lst, "replace 10+10i with 9+9i")
+    parse(lstState, lst, "replace 10+10i with 9+9i")
     assert [9,9] in lst and [10,10] not in lst
 
-    parse(lst, "replace 1+1i with 99+99i")
+    parse(lstState, lst, "replace 1+1i with 99+99i")
     assert [1,1] not in lst and [99,99]  in lst
 
     try:
-        parse(lst, "replace 1+1i with 3-3i")
+        parse(lstState, lst, "replace 1+1i with 3-3i")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
     try:
-        parse(lst, "replace 1+1i with 4i")
+        parse(lstState, lst, "replace 1+1i with 4i")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "replace 1+1i with 96+12i")
+        parse(lstState, lst, "replace 1+1i with 96+12i")
     except RuntimeError as e:
         assert str(e) == "Number is not in the list"
 
-def testList(lst):
+def testList(lstState, lst):
     assert computeListAll(lst, "") == lst
-    parse(lst, "add 17+17i")
+    parse(lstState, lst, "add 17+17i")
     assert computeListAll(lst, "") == lst
 
-def testListRealInRange(lst):
-    assert computeListRealInRange(lst, "real 1 to 3") == [[2,0],[3,0]]
-    assert computeListRealInRange(lst, "real 1 to 4") == [[2,0],[3,0],[4,0]]
-    assert computeListRealInRange(lst, "real 1 to 5") == [[2,0],[3,0],[4,0],[5,0]]
+def testListRealInRange(lstState, lst):
+    #assert computeListRealInRange(lst, "real 1 to 3") == [[2,0],[3,0]]
+    #assert computeListRealInRange(lst, "real 1 to 4") == [[2,0],[3,0],[4,0]]
+    #assert computeListRealInRange(lst, "real 1 to 5") == [[2,0],[3,0],[4,0],[5,0]]
 
     try:
-        parse(lst, "list real 1 to -5")
+        parse(lstState, lst, "list real 1 to -5")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "list real 5 to 5000")
+        parse(lstState, lst, "list real 5 to 5000")
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
-def testListModuloIf(lst):
+def testListModuloIf(lstState, lst):
     assert computeListModuloIf(lst, "modulo = 2") == [[2,2]]
     assert computeListModuloIf(lst, "modulo > 20") == [[99,99], [17,17]]
     assert computeListModuloIf(lst, "modulo < 5") == [[2,2], [3,3]]
 
     try:
-        parse(lst, "modulo | 3")
+        parse(lstState, lst, "modulo | 3")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
     try:
-        parse(lst, "modulo < -3")
+        parse(lstState, lst, "modulo < -3")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
-def testSumInRange(lst):
+def testSumInRange(lstState, lst):
     assert computeSumInRange(lst, "1 to 3") == [5,5]
     assert computeSumInRange(lst, "0 to 3") == [104,104]
     assert computeSumInRange(lst, "2 to 8") == [33,33]
 
     try:
-        parse(lst, "sum 1 to -5")
+        parse(lstState, lst, "sum 1 to -5")
     except RuntimeError as e:
         print(e)
         assert str(e) == "Invalid command"
@@ -451,13 +536,13 @@ def testSumInRange(lst):
         print(e)
         assert str(e) == "Your position does not exist"
 
-def testProductInRange(lst):
+def testProductInRange(lstState, lst):
     assert computeProductInRange(lst, "1 to 3") == [6,6]
     assert computeProductInRange(lst, "0 to 3") == [594,594]
     assert computeProductInRange(lst, "2 to 8") == [20160,20160]
 
     try:
-        parse(lst, "product 1 to -5")
+        parse(lstState, lst, "product 1 to -5")
     except RuntimeError as e:
         assert str(e) == "Invalid command"
 
@@ -478,13 +563,14 @@ def compute():
        - gets user input and calls parse function
     '''
     lst = []
+    lstState = []
     printMenu()
-    #testing(lst)
+    #testing(lstState, lst)
 
     inputValue = input("Give an operation: ")
     while(inputValue != "exit"):
         try:
-            parse(lst, inputValue)
+            lst = parse(lstState, lst, inputValue)
         except RuntimeError as e:
             print(e)
 
