@@ -247,7 +247,8 @@ def addState(lstState, lst):
     :param lst:  the list of complex number
     :return: adds a state to the current lstState
     '''
-    lstState.append(copy.deepcopy(lst))
+    newAuxLst = copy.deepcopy(lst)
+    lstState.append(newAuxLst)
 
 def restoreState(lstState, lst, str):
     '''
@@ -266,8 +267,12 @@ def restoreState(lstState, lst, str):
         raise RuntimeError("Can't undo anymore")
     return lst
 
-
 def isPositionValid(lst, poz):
+    '''
+    :param lst:  the list of complex numbers
+    :param poz:  chosen position
+    :exception if chosen position does not exist
+    '''
     if poz > len(lst) or poz < 0:
           raise RuntimeError("Your position does not exist")
 
@@ -363,6 +368,9 @@ def testing(lstState, lst):
     testListModuloIf(lstState, lst)
     testSumInRange(lstState, lst)
     testProductInRange(lstState, lst)
+    testFilterReal(lstState, lst)
+    testFilterModuloIf(lstState, lst)
+    testRestoreState(lstState, lst)
 
 def testInit(lstState, lst):
     lst.append([1,1])
@@ -556,6 +564,47 @@ def testProductInRange(lstState, lst):
     except RuntimeError as e:
         assert str(e) == "Your position does not exist"
 
+def testFilterReal(lstState, lst):
+    assert computeFilterReal(lstState, lst, "") == []
+
+    parse(lstState, lst, "add 1+0i")
+    parse(lstState, lst, "add 2+2i")
+    parse(lstState, lst, "add 3+0i")
+    parse(lstState, lst, "add 4+0i")
+    assert len(computeFilterReal(lstState, lst, "")) == 3
+
+    parse(lstState, lst, "add 5+0i")
+    parse(lstState, lst, "add 6+6i")
+    assert len(computeFilterReal(lstState, lst, "")) == 4
+
+    parse(lstState, lst, "add 2+0i")
+    assert len(computeFilterReal(lstState, lst, "")) == 5
+
+def testFilterModuloIf(lstState, lst):
+    print(lst)
+    assert computeFilterModuloIf(lstState, lst, "modulo < 2") == [[1,0]]
+    assert len(computeFilterModuloIf(lstState, lst, "modulo < 5")) == 7
+    assert len(computeFilterModuloIf(lstState, lst, "modulo < 10")) == 13
+    assert len(computeFilterModuloIf(lstState, lst, "modulo > 1")) == 16
+    assert len(computeFilterModuloIf(lstState, lst, "modulo > 100")) == 1
+    assert len(computeFilterModuloIf(lstState, lst, "modulo > 20")) == 2
+
+def testRestoreState(lstState, lst):
+    parse(lstState, lst, "add 1+1i")
+    parse(lstState, lst, "add 312+2134i")
+    parse(lstState, lst, "add 1+7i")
+
+    crtLength = len(lst)
+    lst = parse(lstState, lst, "undo")
+    assert len(lst) == crtLength - 1
+
+    lst = parse(lstState, lst, "undo")
+    assert len(lst) == crtLength - 2
+
+    computeFilterModuloIf(lstState, lst, "modulo < 1")
+    lst = parse(lstState, lst, "undo")
+    assert len(lst) == crtLength - 2
+
 def compute():
     '''
     Main function of the program:
@@ -565,7 +614,7 @@ def compute():
     lst = []
     lstState = []
     printMenu()
-    #testing(lstState, lst)
+    testing(lstState, lst)
 
     inputValue = input("Give an operation: ")
     while(inputValue != "exit"):
