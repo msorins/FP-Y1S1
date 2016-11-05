@@ -98,10 +98,3 @@ class CommandUI:
             raise RuntimeError("Wrong command")
         if ( int(command) > len(menu) and int(command) !=9 ) or  int(command) < 0:
             raise RuntimeError("Invalid number")
-
-
-
-
-
-
-

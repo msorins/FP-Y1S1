@@ -14,7 +14,7 @@ class ClientController():
         if(type(client) == Client):
             print(client.getName() + " added to the client list")
         else:
-            raise TypeError("Invalid movie format")
+            raise TypeError("Invalid client format")
 
     def removeClient(self, client):
         searchedIndex = self.findClient(client)
@@ -53,3 +53,6 @@ class ClientController():
             msg += str(crt.getClientId()) + " : " + str(crt.getName())
             msg += "\n"
         return msg
+
+    def __len__(self):
+        return len(self._clientList)

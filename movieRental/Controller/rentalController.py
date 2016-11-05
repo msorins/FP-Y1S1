@@ -7,7 +7,7 @@ class RentalController():
 
     def rentMovie(self, rental):
         if not self.canUserRent(rental):
-            print("User cannot rent movie due to the fact that is untrustworty")
+            raise RuntimeError("User cannot rent movie due to the fact that is untrustworty")
             return
 
         if(type(rental) == Rental):
@@ -34,3 +34,6 @@ class RentalController():
             msg = msg + str(crt.getClientId()) + ": " + str(crt.getMovieId()) + ", " + str(crt.getRentedDate()) + ", " + str(crt.getDueDate()) + ", " + str(crt.getReturnedDate())
             msg += "\n"
         return msg
+
+    def __len__(self):
+        return len(self._rentalList)

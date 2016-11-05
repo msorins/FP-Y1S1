@@ -27,14 +27,14 @@ class Movie:
         return self._title
 
     def setDescription(self, description):
-        self._utilsObject.nonEmptyAndMoreThanThree(description)
+        #self._utilsObject.nonEmptyAndMoreThanThree(description)
         self._description = description
 
     def getDescription(self, description):
         return self._description
 
     def setGenre(self, genre):
-        self._utilsObject.nonEmptyAndMoreThanThree(genre)
+        #self._utilsObject.nonEmptyAndMoreThanThree(genre)
         self._genre = genre
 
     def getGenre(self):

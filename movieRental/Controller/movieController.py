@@ -51,3 +51,6 @@ class MovieController():
             msg += str(crt.getMovieId()) + ": " + str(crt.getTitle()) + ",  " + str(crt.getGenre())
             msg += "\n"
         return msg
+
+    def __len__(self):
+        return len(self._movieList)
