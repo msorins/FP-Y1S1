@@ -1,0 +1,30 @@
+class Movie:
+    idCount = 0
+
+    def __init__(self, title, description, genre):
+        self.setMovieId()
+        self.setTitle(title)
+        self.setDescription(description)
+        self.setGenre(genre)
+
+    def setMovieId(self):
+        self._movieId = Movie.idCount
+        Movie.idCount = Movie.idCount + 1
+
+    def getMovieId(self):
+        return self._movieId
+
+    def setTitle(self, title):
+        self._title = title
+    def getTitle(self):
+        return self._title
+
+    def setDescription(self, description):
+        self._description = description
+    def getDescription(self, description):
+        return self._description
+
+    def setGenre(self, genre):
+        self._genre = genre
+    def getGenre(self):
+        return self._genre

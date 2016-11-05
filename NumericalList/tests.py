@@ -18,13 +18,13 @@ def testing(lstState, lst):
     testRestoreState(lstState, lst)
 
 def testInit(lstState, lst):
-    lst.append([1,1])
-    lst.append([2,2])
-    lst.append([3,3])
-    lst.append([4,4])
-    lst.append([5,5])
-    lst.append([6,6])
-    lst.append([7,7])
+    parse(lstState, lst, "add 1+1i")
+    parse(lstState, lst, "add 2+2i")
+    parse(lstState, lst, "add 3+3i")
+    parse(lstState, lst, "add 4+4i")
+    parse(lstState, lst, "add 5+5i")
+    parse(lstState, lst, "add 6+6i")
+    parse(lstState, lst, "add 7+7i")
 
 def testAdd(lstState, lst):
     parse(lstState, lst, "add 8+8i")

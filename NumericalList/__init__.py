@@ -14,9 +14,10 @@ def initFunction():
     lstState = []
 
     #testing(lstState, lst)
+    testInit(lstState, lst)
     printMenu()
-    inputValue = input("Give an operation: ")
 
+    inputValue = input("Give an operation: ")
     while(inputValue != "exit"):
         try:
             lst = parse(lstState, lst, inputValue)
