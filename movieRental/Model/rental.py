@@ -1,11 +1,14 @@
 __author__ = 'sorynsoo'
 
 from datetime import datetime
+from movieRental.Utils.utils import *
 
 class Rental():
     idCount = 0;
 
-    def __init__(self, movieId, clientId, rentedDate, dueDate, returnedDate):
+    def __init__(self, clientId, movieId, rentedDate, dueDate, returnedDate):
+        self._utilsObject = Utils()
+
         self.setRentalId()
         self.setMovieId(movieId)
         self.setClientId(clientId)
@@ -36,6 +39,9 @@ class Rental():
         if rentedDate == "":
             self._returnedDate = ""
             return
+
+        self._utilsObject.validateDateFormat(rentedDate)
+
         if type(rentedDate) == str:
             self._rentedDate = datetime.strptime(rentedDate, '%d.%m.%Y')
             return
@@ -48,6 +54,9 @@ class Rental():
         if dueDate == "":
             self._dueDate = ""
             return
+
+        self._utilsObject.validateDateFormat(dueDate)
+
         if type(dueDate) == str:
             self._dueDate = datetime.strptime(dueDate, '%d.%m.%Y')
             return
@@ -60,6 +69,9 @@ class Rental():
         if returnedDate == "":
             self._returnedDate = ""
             return
+
+        self._utilsObject.validateDateFormat(returnedDate)
+
         if type(returnedDate) == str:
             self._returnedDate = datetime.strptime(returnedDate, '%d.%m.%Y')
             return

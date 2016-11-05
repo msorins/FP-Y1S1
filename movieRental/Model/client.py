@@ -1,9 +1,13 @@
 __author__ = 'sorynsoo'
 
+from movieRental.Utils.utils import *
+
 class Client:
     idCount = 0
 
     def __init__(self, name):
+        self._utilsObject = Utils()
+        
         self.setClientId()
         self.setName(name)
 
@@ -15,6 +19,8 @@ class Client:
         return self._clientId
 
     def setName(self, name):
+        self._utilsObject.nonEmptyAndMoreThanThree(name)
         self._name = name
+
     def getName(self):
         return self._name

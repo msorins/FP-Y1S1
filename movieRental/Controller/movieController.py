@@ -46,8 +46,8 @@ class MovieController():
             yield elem
 
     def __str__(self):
-        msg = ""
+        msg = "\nID | TITLE | GENRE\n"
         for crt in self._movieList:
-            msg += str(crt.getMovieId()) + ": " + str(crt.getTitle()) + ", " + str(crt.getGenre())
+            msg += str(crt.getMovieId()) + ": " + str(crt.getTitle()) + ",  " + str(crt.getGenre())
             msg += "\n"
         return msg

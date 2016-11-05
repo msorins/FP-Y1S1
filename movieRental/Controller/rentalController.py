@@ -7,7 +7,7 @@ class RentalController():
 
     def rentMovie(self, rental):
         if not self.canUserRent(rental):
-            print("User cannot rent movie due to the fact that is untrustworty ")
+            print("User cannot rent movie due to the fact that is untrustworty")
             return
 
         if(type(rental) == Rental):
@@ -24,12 +24,12 @@ class RentalController():
 
     def canUserRent(self, rental):
         for crt in self._rentalList:
-            if crt.getClientId() == rental.getClientId() and type(crt.getReturnedDate()) == datetime and crt.getDueDate() > crt.getReturnedDate():
+            if crt.getClientId() == rental.getClientId() and crt.getReturnedDate() != "" and crt.getReturnedDate() > crt.getDueDate():
                 return False
         return True
 
     def __str__(self):
-        msg = ""
+        msg = "\nCLIENT ID | MOVIE ID | RENTED DATE | DUE DATE | RETURNED DATE\n"
         for crt in self._rentalList:
             msg = msg + str(crt.getClientId()) + ": " + str(crt.getMovieId()) + ", " + str(crt.getRentedDate()) + ", " + str(crt.getDueDate()) + ", " + str(crt.getReturnedDate())
             msg += "\n"

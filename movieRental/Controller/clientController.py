@@ -8,6 +8,8 @@ class ClientController():
         self._clientList = []
 
     def addClient(self, client):
+        if self.findClient(client) != -1:
+            raise RuntimeError("There already exists a user with this name")
         self._clientList.append(client)
         if(type(client) == Client):
             print(client.getName() + " added to the client list")
@@ -46,8 +48,8 @@ class ClientController():
             yield elem
 
     def __str__(self):
-        msg = ""
+        msg = "\nID | NAME\n"
         for crt in self._clientList:
-            msg += str(crt.getClientId()) + ": " + str(crt.getName())
+            msg += str(crt.getClientId()) + " : " + str(crt.getName())
             msg += "\n"
         return msg

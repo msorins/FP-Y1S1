@@ -11,19 +11,14 @@ from movieRental.Controller.rentalController import *
 
 from movieRental.View.commandUI import *
 
+from movieRental.Tests.tests import *
 
 def initFunction():
 
     movieControllerObj = MovieController()
     clientControllerObj = ClientController()
     rentalControllerObj = RentalController()
-
-    clientControllerObj.addClient(Client("so"))
-    clientControllerObj.addClient(Client("lupi"))
-    movieControllerObj.addMovie(Movie("supernatural", "cel mai tare", "horror"))
-    movieControllerObj.addMovie(Movie("superman", "al doilea cel mai tare", "sci-fi"))
-    rentalControllerObj.rentMovie(Rental(clientControllerObj.getClientIdByName("so"), movieControllerObj.getMovieIdByName("supernatural"),"1.11.2016","10.11.2016", ""))
-    rentalControllerObj.rentMovie(Rental(clientControllerObj.getClientIdByName("lupi"), movieControllerObj.getMovieIdByName("supernatural"),"15.11.2016","20.11.2016", ""))
+    Tests(movieControllerObj, clientControllerObj, rentalControllerObj)
 
     while 1:
         try:
