@@ -22,7 +22,7 @@ class Tests:
         self.returnMovieTest()
 
     def populateValues(self):
-        names = ["Sorin", "Andreea", "Gheorghe", "Alex", "Lupi", "Stefan", "George", "Denis"]
+        names = ["Sorin", "Andreea", "Gheorghe", "Alex", "Lupi", "Stefan", "George", "Denis", "Sorpasc"]
         for crt in names:
             self._clientController.addClient(Client(crt))
 

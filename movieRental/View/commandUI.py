@@ -23,7 +23,10 @@ class CommandUI:
                 {"id" : 3, "msg": "Replace client", "final": False, "next" : [
                     { "msg" : "<oldName> <newName>", "final" : True, "type": "client2", "method" : self._clientController.replaceClient}
                 ]},
-                {"id" : 4, "msg": "Print", "final" : True, "obj": self._clientController}
+                {"id" : 4, "msg": "Find client", "final": False, "next" : [
+                    { "msg" : "<name>", "final" : True, "type": "client3", "method" : self._clientController.findClients}
+                ]},
+                {"id" : 5, "msg": "Print", "final" : True, "obj": self._clientController}
             ]},
             {"id" : 2, "msg": "Movie commands", "final" : False, "next": [
                 {"id" : 1, "msg": "Add movie", "final" : False, "next" : [
@@ -35,7 +38,10 @@ class CommandUI:
                 {"id" : 3, "msg": "Replace movie", "final": False, "next" : [
                     { "msg" : "<replacedTitle> <newTitle> <newDescription> <newGenre>", "final" : True, "type": "movie3", "method" : self._movieController.replaceMovie}
                 ]},
-                {"id" : 4, "msg": "Print", "final" : True, "obj": self._movieController}
+                {"id" : 4, "msg": "Find movie", "final" : False, "next" : [
+                    { "msg" : "<title> <description> <genre>", "final" : True, "type": "movie4", "method" : self._movieController.findMovies}
+                ]},
+                {"id" : 5, "msg": "Print", "final" : True, "obj": self._movieController}
             ]},
             {"id" : 3, "msg": "Rental commands", "next": [
                 {"id" : 1, "msg": "Rent movie", "final" : False, "next" : [
@@ -78,12 +84,16 @@ class CommandUI:
                 menu[0]["method"](Client(input("Name: ")))
             if menu[0]["type"] == "client2":
                 menu[0]["method"](Client(input("oldName: ")), Client(input("newName: ")))
+            if menu[0]["type"] == "client3":
+                print(menu[0]["method"](Client(input("Name: "))))
             if menu[0]["type"] == "movie1":
                 menu[0]["method"](Movie(input("Title: "), input("Description: "), input("Genre: ")))
             if menu[0]["type"] == "movie2":
                 menu[0]["method"](Movie(input("Title: "), "", ""))
             if menu[0]["type"] == "movie3":
                 menu[0]["method"](Movie(input("Replaced title: "), "", ""), Movie(input("Title: "), input("Description: "), input("Genre: ")))
+            if menu[0]["type"] == "movie4":
+                print(menu[0]["method"](Movie(Utils.bypassValidation(input("Title: ")), Utils.bypassValidation(input("Description: ")), Utils.bypassValidation(input("Genre: ")))))
             if menu[0]["type"] == "rental1":
                 menu[0]["method"](Rental(self._clientController.getClientIdByName(input("Client name: ")), self._movieController.getMovieIdByName(input("Movie name: ")), input("Rented date: "), input("Due date: "), ""))
             if menu[0]["type"] == "rental2":

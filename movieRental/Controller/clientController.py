@@ -2,6 +2,7 @@ __author__ = 'sorynsoo'
 
 
 from movieRental.Model.client import *
+from movieRental.Utils.utils import *
 
 class ClientController():
     def __init__(self):
@@ -10,9 +11,10 @@ class ClientController():
     def addClient(self, client):
         if self.findClient(client) != -1:
             raise RuntimeError("There already exists a user with this name")
-        self._clientList.append(client)
+
         if(type(client) == Client):
-            print(client.getName() + " added to the client list")
+            #print(client.getName() + " added to the client list")
+            self._clientList.append(client)
         else:
             raise TypeError("Invalid client format")
 
@@ -29,6 +31,16 @@ class ClientController():
             raise RuntimeError("Client does not exist")
 
         self._clientList[searchedIndex] = clientNew
+
+    def findClients(self, client):
+      result = ClientController()
+
+      #Search by case-insensitive name + partial names
+      for i in range(len(self._clientList)):
+          if Utils().findPartial(self._clientList[i].getName(), client.getName()):
+              result.addClient(self._clientList[i])
+
+      return result
 
     def findClient(self, client):
         for i in range(len(self._clientList)):

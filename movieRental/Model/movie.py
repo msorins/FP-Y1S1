@@ -30,7 +30,7 @@ class Movie:
         #self._utilsObject.nonEmptyAndMoreThanThree(description)
         self._description = description
 
-    def getDescription(self, description):
+    def getDescription(self):
         return self._description
 
     def setGenre(self, genre):

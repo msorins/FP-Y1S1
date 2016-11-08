@@ -25,3 +25,17 @@ class Utils:
         rgx = re.compile(r"^[\d]?[\d].[\d]?[\d].[\d][\d][\d][\d]$")
         if not rgx.match(date):
             raise RuntimeError("Wrong date format")
+
+    def findPartial(self, string1, string2):
+        string1 = string1.lower()
+        string2 = string2.lower()
+        #strstr
+        if string1.find(string2) != -1 or string1.startswith(string2[:3]):
+            return True
+        else:
+            return False
+
+    def bypassValidation(str):
+        if not str or len(str) < 3:
+            str = "±±±"
+        return str

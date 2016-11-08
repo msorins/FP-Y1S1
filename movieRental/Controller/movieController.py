@@ -7,7 +7,7 @@ class MovieController():
     def addMovie(self, movie):
         if(type(movie) == Movie):
             self._movieList.append(movie)
-            print(movie.getTitle() + " added to the movie list")
+            #print(movie.getTitle() + " added to the movie list")
         else:
             raise TypeError("Invalid movie format")
 
@@ -24,6 +24,26 @@ class MovieController():
             raise RuntimeError("Requested movie does not exist")
 
         self._movieList[searchedIndex] = movieNew
+
+    def findMovies(self, movie):
+        result = MovieController()
+
+        for i in range(len(self._movieList)):
+           #Search by case-insensitive + partial name
+           if Utils().findPartial(self._movieList[i].getTitle(), movie.getTitle()):
+               result.addMovie(self._movieList[i])
+               continue
+           #Search by case-insensitive + partial description
+           if Utils().findPartial(self._movieList[i].getDescription(), movie.getDescription()):
+               result.addMovie(self._movieList[i])
+               continue
+           #Search by case-insensitive + partial genre
+           if Utils().findPartial(self._movieList[i].getGenre(), movie.getGenre()):
+               result.addMovie(self._movieList[i])
+
+        return result
+
+
 
     def findMovie(self, movie):
         '''
