@@ -43,8 +43,6 @@ class MovieController():
 
         return result
 
-
-
     def findMovie(self, movie):
         '''
         :param movie: a Movie type object
@@ -61,6 +59,14 @@ class MovieController():
                 return crt.getMovieId()
 
         raise RuntimeError("Movie not found")
+
+    def getMovieById(self, id):
+        for crt in self._movieList:
+            if crt.getMovieId() == id:
+                return crt
+
+        raise RuntimeError("Movie not found")
+
     def __iter__(self):
         for elem in self._movieList:
             yield elem

@@ -53,7 +53,14 @@ class ClientController():
             if crt.getName() == name:
                 return crt.getClientId()
 
-        raise RuntimeError("User not found")
+        raise RuntimeError("Client not found")
+
+    def getClientById(self, id):
+        for crt in self._clientList:
+            if crt.getClientId() == id:
+                return crt
+
+        raise RuntimeError("Client not found")
 
     def __iter__(self):
         for elem in self._clientList:

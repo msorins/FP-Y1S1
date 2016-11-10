@@ -51,6 +51,20 @@ class CommandUI:
                     { "msg" : "<clientName> <movieName> <returnedDate>", "final" : True, "type": "rental2", "method" : self._rentalController.returnMovie}
                 ]},
                 {"id" : 3, "msg": "Print", "final" : True, "obj": self._rentalController}
+            ]},
+            {"id" : 4, "msg": "Stats commands", "next": [
+                {"id" : 1, "msg": "Most rented movies", "final" : True, "next" : [
+                    {"type": "stats1", "msg": "Printing most rented movies:", "final" : True, "method": self._rentalController.mostRentedMovies}
+                ]},
+                {"id" : 2, "msg": "Most active clients", "final" : True, "next" : [
+                    {"type": "stats2", "msg": "Printing most active clients:", "final" : True, "method": self._rentalController.mostActiveClients}
+                ]},
+                {"id" : 3, "msg": "All current rentals & all currently rented movies", "final" : True, "next" : [
+                    {"type": "stats3", "msg": "Printing your stats:", "final" : True, "method": self._rentalController.rentalsAndMoviesCurrentlyRented}
+                ]},
+                {"id" : 4, "msg": "Late rentals sorted by the delay", "final" : True, "next" : [
+                    {"type": "stats4", "msg": "Printing your stats:", "final" : True, "method": self._rentalController.currentlyRentedUnreturnedMovies}
+                ]}
             ]}
         ]
 
@@ -98,7 +112,14 @@ class CommandUI:
                 menu[0]["method"](Rental(self._clientController.getClientIdByName(input("Client name: ")), self._movieController.getMovieIdByName(input("Movie name: ")), input("Rented date: "), input("Due date: "), ""))
             if menu[0]["type"] == "rental2":
                 menu[0]["method"](Rental(self._clientController.getClientIdByName(input("Client name: ")), self._movieController.getMovieIdByName(input("Movie name: ")), "", "", str(input("Returned date: "))))
-
+            if menu[0]["type"] == "stats1":
+                print(self.mostRentedMoviesUI(menu[0]["method"]()))
+            if menu[0]["type"] == "stats2":
+                print(self.mostActiveClientsUI(menu[0]["method"]()))
+            if menu[0]["type"] == "stats3":
+                print(self.rentalsAndMoviesCurrentlyRentedUI(menu[0]["method"]()))
+            if menu[0]["type"] == "stats4":
+                print(self.currentlyRentedUnreturnedMoviesUI(menu[0]["method"]()))
 
             self.showMenu(self._menu)
 
@@ -108,3 +129,39 @@ class CommandUI:
             raise RuntimeError("Wrong command")
         if ( int(command) > len(menu) and int(command) !=9 ) or  int(command) < 0:
             raise RuntimeError("Invalid number")
+
+    def mostRentedMoviesUI(self, obj):
+        out = "\n\nMovie Title: Nr of times rented\n"
+
+        for crt in obj:
+            out = out + self._movieController.getMovieById(crt[0]).getTitle() + ": " + str(crt[1]) + "\n"
+
+        return out
+
+    def mostActiveClientsUI(self, obj):
+        out = "\n\nName: Nr of movies rented\n"
+
+        for crt in obj:
+            out = out + self._clientController.getClientById(crt[0]).getName() + ": " + str(crt[1]) + "\n"
+
+        return out
+
+    def rentalsAndMoviesCurrentlyRentedUI(self, obj):
+        out = "\n\nCurrent rentals:\n"
+        out = out + "ID: ClientName\n"
+        for clientId in obj.keys():
+            out = out + str(clientId) + ": " + self._clientController.getClientById(clientId).getName() + "\n"
+            out = out + "  ID: Movie Title\n"
+            for movieId in obj[clientId]:
+                out = out + "  " + str(movieId) + ": " + self._movieController.getMovieById(movieId).getTitle()  + "\n"
+            out = out + "\n"
+
+        return out
+
+    def currentlyRentedUnreturnedMoviesUI(self, obj):
+        out = "\n\nID: Movie Title, Nr. of days passed\n"
+
+        for crt in obj:
+            out = out + str(crt.getMovieId()) +": " + self._movieController.getMovieById(crt.getMovieId()).getTitle() + ", " + str((crt.getReturnedDate() - crt.getDueDate()).days) + " days passed\n"
+
+        return out

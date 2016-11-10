@@ -22,7 +22,7 @@ class Tests:
         self.returnMovieTest()
 
     def populateValues(self):
-        names = ["Sorin", "Andreea", "Gheorghe", "Alex", "Lupi", "Stefan", "George", "Denis", "Sorpasc"]
+        names = ["Sorin", "Andreea", "Gheorghe", "Alex", "Lupi", "Stefan", "George", "Denis", "Sorpasc", "Costel"]
         for crt in names:
             self._clientController.addClient(Client(crt))
 
@@ -44,8 +44,10 @@ class Tests:
             self._movieController.addMovie(Movie(crt[0], crt[1], crt[2]))
 
         self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Sorin"), self._movieController.getMovieIdByName("Supernatural"),"1.11.2016","10.11.2016", ""))
+        self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Sorin"), self._movieController.getMovieIdByName("Vikings"),"1.11.2016","10.11.2016", ""))
         self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Andreea"), self._movieController.getMovieIdByName("Vikings"),"15.11.2016","20.11.2016", ""))
         self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName("Andreea"), self._movieController.getMovieIdByName("Vikings"),"","", "22.11.2016"))
+        self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Costel"), self._movieController.getMovieIdByName("The Flash"),"1.12.2016","17.12.2016", ""))
 
     def addClientTest(self):
         self._clientController.addClient(Client("zuckerberg"))
@@ -193,7 +195,7 @@ class Tests:
         try:
             self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("ZAAP"), self._movieController.getMovieIdByName("Arrow"), "15.11.2016", "20.11.2016", ""))
         except Exception as e:
-            assert str(e) == "User not found"
+            assert str(e) == "Client not found"
 
         try:
             self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Andreea"), self._movieController.getMovieIdByName("BZZP"), "15.11.2016", "20.11.2016", ""))
@@ -213,7 +215,7 @@ class Tests:
         try:
             self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName("BlbLA"), self._movieController.getMovieIdByName("Suits"), "", "", "21.11.2016"))
         except Exception as e:
-            assert str(e) == "User not found"
+            assert str(e) == "Client not found"
 
         try:
             self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName("Sorin"), self._movieController.getMovieIdByName("BlaBla"), "", "", "21.11.2016"))
@@ -223,6 +225,6 @@ class Tests:
         try:
             self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName(""), self._movieController.getMovieIdByName("Suits"), "", "", "21.11.2016"))
         except Exception as e:
-            assert str(e) == "User not found"
+            assert str(e) == "Client not found"
 
 
