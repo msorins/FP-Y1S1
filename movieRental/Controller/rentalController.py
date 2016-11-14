@@ -1,12 +1,14 @@
 __author__ = 'sorynsoo'
 from movieRental.Model.rental import *
 import operator
+import copy
 
 class RentalController():
     def __init__(self):
         self._rentalList = []
         self._rentedMoviesCounter = {}
         self._rentedClientsCounter = {}
+        self._state = []
 
     def rentMovie(self, rental):
         if not self.canUserRent(rental):
@@ -17,14 +19,24 @@ class RentalController():
             self._rentalList.append(rental)
             self.incrementRentedMoviesCounter(rental)
             self.incrementRentedClientsCounter(rental)
+            self.saveState()
             #print(str(rental.getClientId()) + " request added to the rental log")
         else:
             raise TypeError("Invalid rental format")
 
     def returnMovie(self, rental):
+        ok = False
         for crt in self._rentalList:
             if crt.getClientId() == rental.getClientId() and crt.getMovieId() == rental.getMovieId():
                 crt.setReturnedDate(rental.getReturnedDate())
+                ok = True
+
+        if ok == True:
+            self.saveState()
+        else:
+            raise RuntimeError("Operation could not have been executed")
+
+
 
     def canUserRent(self, rental):
         for crt in self._rentalList:
@@ -81,6 +93,20 @@ class RentalController():
 
     def getRentedClientsCounter(self, rental):
         return self._rentedClientsCounter[rental.getClientId()]
+
+    def saveState(self):
+        rentalListAux = copy.deepcopy(self._rentalList)
+        self._state.append(rentalListAux)
+
+    def restoreState(self):
+        if len(self._state) >= 2:
+            self._rentalList = self._state[len(self._state)-2]
+            self._state.pop()
+        elif len(self._state) == 1:
+            self._rentalList = []
+            self._state.pop()
+        else:
+            raise RuntimeError("Can't undo anymore")
 
     def __str__(self):
         msg = "\nCLIENT ID | MOVIE ID | RENTED DATE | DUE DATE | RETURNED DATE\n"

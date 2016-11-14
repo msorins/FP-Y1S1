@@ -26,7 +26,10 @@ class CommandUI:
                 {"id" : 4, "msg": "Find client", "final": False, "next" : [
                     { "msg" : "<name>", "final" : True, "type": "client3", "method" : self._clientController.findClients}
                 ]},
-                {"id" : 5, "msg": "Print", "final" : True, "obj": self._clientController}
+                {"id" : 5, "msg": "Undo", "final": False, "next" : [
+                    { "msg" : "<name>", "final" : True, "type": "undo", "method" : self._clientController.restoreState}
+                ]},
+                {"id" : 6, "msg": "Print", "final" : True, "obj": self._clientController}
             ]},
             {"id" : 2, "msg": "Movie commands", "final" : False, "next": [
                 {"id" : 1, "msg": "Add movie", "final" : False, "next" : [
@@ -41,7 +44,10 @@ class CommandUI:
                 {"id" : 4, "msg": "Find movie", "final" : False, "next" : [
                     { "msg" : "<title> <description> <genre>", "final" : True, "type": "movie4", "method" : self._movieController.findMovies}
                 ]},
-                {"id" : 5, "msg": "Print", "final" : True, "obj": self._movieController}
+                {"id" : 5, "msg": "Undo", "final": False, "next" : [
+                    { "msg" : "<name>", "final" : True, "type": "undo", "method" : self._movieController.restoreState}
+                ]},
+                {"id" : 6, "msg": "Print", "final" : True, "obj": self._movieController}
             ]},
             {"id" : 3, "msg": "Rental commands", "next": [
                 {"id" : 1, "msg": "Rent movie", "final" : False, "next" : [
@@ -50,7 +56,10 @@ class CommandUI:
                 {"id" : 2, "msg": "Return movie", "final" : False, "next" : [
                     { "msg" : "<clientName> <movieName> <returnedDate>", "final" : True, "type": "rental2", "method" : self._rentalController.returnMovie}
                 ]},
-                {"id" : 3, "msg": "Print", "final" : True, "obj": self._rentalController}
+                {"id" : 3, "msg": "Undo", "final": False, "next" : [
+                    { "msg" : "<name>", "final" : True, "type": "undo", "method" : self._rentalController.restoreState}
+                ]},
+                {"id" : 4, "msg": "Print", "final" : True, "obj": self._rentalController}
             ]},
             {"id" : 4, "msg": "Stats commands", "next": [
                 {"id" : 1, "msg": "Most rented movies", "final" : True, "next" : [
@@ -120,6 +129,8 @@ class CommandUI:
                 print(self.rentalsAndMoviesCurrentlyRentedUI(menu[0]["method"]()))
             if menu[0]["type"] == "stats4":
                 print(self.currentlyRentedUnreturnedMoviesUI(menu[0]["method"]()))
+            if menu[0]["type"] == "undo":
+                 menu[0]["method"]()
 
             self.showMenu(self._menu)
 

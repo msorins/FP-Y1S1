@@ -1,12 +1,15 @@
 from movieRental.Model.movie import *
+import copy
 
 class MovieController():
     def __init__(self):
         self._movieList = []
+        self._state = []
 
     def addMovie(self, movie):
         if(type(movie) == Movie):
             self._movieList.append(movie)
+            self.saveState()
             #print(movie.getTitle() + " added to the movie list")
         else:
             raise TypeError("Invalid movie format")
@@ -17,6 +20,7 @@ class MovieController():
             raise RuntimeError("Requested movie does not exist")
 
         self._movieList.pop(searchedIndex)
+        self.saveState()
 
     def replaceMovie(self, movieOld, movieNew):
         searchedIndex = self.findMovie(movieOld)
@@ -24,6 +28,7 @@ class MovieController():
             raise RuntimeError("Requested movie does not exist")
 
         self._movieList[searchedIndex] = movieNew
+        self.saveState()
 
     def findMovies(self, movie):
         result = MovieController()
@@ -66,6 +71,20 @@ class MovieController():
                 return crt
 
         raise RuntimeError("Movie not found")
+
+    def saveState(self):
+        movieListAux = copy.deepcopy(self._movieList)
+        self._state.append(movieListAux)
+
+    def restoreState(self):
+        if len(self._state) >= 2:
+            self._movieList = self._state[len(self._state)-2]
+            self._state.pop()
+        elif len(self._state) == 1:
+            self._movieList = []
+            self._state.pop()
+        else:
+            raise RuntimeError("Can't undo anymore")
 
     def __iter__(self):
         for elem in self._movieList:
