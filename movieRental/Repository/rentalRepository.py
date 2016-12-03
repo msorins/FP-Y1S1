@@ -89,6 +89,58 @@ class RentalRepository():
     def getRentedClientsCounter(self, rental):
         return self._rentedClientsCounter[rental.getClientId()]
 
+    def removeByClientId(self, clientId):
+        i = 0
+        while i < len(self._rentalList):
+            if self._rentalList[i].getClientId() == clientId:
+                self._rentalList.pop(i)
+                i = i - 2
+            i = i +1
+
+        #Delete the ClientsCounter
+        del(self._rentedClientsCounter[clientId])
+
+    def replaceClient(self, clientOld, clientNew):
+        '''
+        :param clientOld: Client object
+        :param clientNew: Client object
+        :return:
+        '''
+
+        #Change the ids in rentalList
+        for i in range(len(self._rentalList)):
+            if self._rentalList[i].getClientId() == clientOld.getClientId():
+                self._rentalList[i].setClientId(clientNew.getClientId())
+
+        #change the ids in rentedClientsCounter
+        aux = self._rentedClientsCounter[clientOld.getClientId()]
+        del(self._rentedClientsCounter[clientOld.getClientId()])
+        self._rentedClientsCounter[clientNew.getClientId()] = aux
+
+    def removeByMovieId(self, movieId):
+        i = 0
+        while i < len(self._rentalList):
+            if self._rentalList[i].getMovieId() == movieId:
+                self._rentalList.pop(i)
+                i = i - 2
+            i = i +1
+
+        #Delete the MoviesCounter
+        del(self._rentedMoviesCounter[movieId])
+
+    def replaceMovie(self, movieOld, movieNew):
+
+         for i in range(len(self._rentalList)):
+            if self._rentalList[i].getMovieId() == movieOld.getMovieId():
+                self._rentalList[i].setMovieId(movieOld.getMovieId())
+
+         aux = self._rentedMoviesCounter[movieOld.getMovieId()]
+         del(self._rentedMoviesCounter[movieOld.getMovieId()])
+
+         self._rentedMoviesCounter[movieNew.getMovieId()] = aux
+
+
+
 
     def __str__(self):
         msg = "\nCLIENT ID | MOVIE ID | RENTED DATE | DUE DATE | RETURNED DATE\n"

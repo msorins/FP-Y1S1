@@ -16,6 +16,9 @@ class Movie:
         self._movieId = Movie.idCount
         Movie.idCount = Movie.idCount + 1
 
+    def setManuallyMovieId(self, id):
+        self._movieId = id
+
     def getMovieId(self):
         return self._movieId
 

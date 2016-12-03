@@ -16,10 +16,10 @@ class CommandUI:
                     { "msg" : "<name>", "final" : True, "type": "client1", "method" : self._mainController._clientRepository.addClient}
                 ]},
                 {"id" : 2, "msg": "Remove client", "final" : False, "next" : [
-                    { "msg" : "<name>", "final" : True, "type": "client1", "method" : self._mainController._clientRepository.removeClient}
+                    { "msg" : "<name>", "final" : True, "type": "client1", "method" : self._mainController.removeClient}
                 ]},
                 {"id" : 3, "msg": "Replace client", "final": False, "next" : [
-                    { "msg" : "<oldName> <newName>", "final" : True, "type": "client2", "method" : self._mainController._clientRepository.replaceClient}
+                    { "msg" : "<oldName> <newName>", "final" : True, "type": "client2", "method" : self._mainController.replaceClient}
                 ]},
                 {"id" : 4, "msg": "Find client", "final": False, "next" : [
                     { "msg" : "<name>", "final" : True, "type": "client3", "method" : self._mainController._clientRepository.findClients}
@@ -31,10 +31,10 @@ class CommandUI:
                     { "msg" : "<title> <description> <genre>", "final" : True, "type": "movie1", "method" : self._mainController._movieRepository.addMovie}
                 ]},
                 {"id" : 2, "msg": "Remove movie", "final" : False, "next" : [
-                    { "msg" : "<title>", "final" : True, "type": "movie2", "method" : self._mainController._movieRepository.removeMovie}
+                    { "msg" : "<title>", "final" : True, "type": "movie2", "method" : self._mainController.removeMovie}
                 ]},
                 {"id" : 3, "msg": "Replace movie", "final": False, "next" : [
-                    { "msg" : "<replacedTitle> <newTitle> <newDescription> <newGenre>", "final" : True, "type": "movie3", "method" : self._mainController._movieRepository.replaceMovie}
+                    { "msg" : "<replacedTitle> <newTitle> <newDescription> <newGenre>", "final" : True, "type": "movie3", "method" : self._mainController.replaceMovie}
                 ]},
                 {"id" : 4, "msg": "Find movie", "final" : False, "next" : [
                     { "msg" : "<title> <description> <genre>", "final" : True, "type": "movie4", "method" : self._mainController._movieRepository.findMovies}

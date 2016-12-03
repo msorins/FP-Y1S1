@@ -38,3 +38,32 @@ class MainController():
         self._movieRepository = self._state[self._stateIndex]["movieController"]
         self._clientRepository = self._state[self._stateIndex]["clientController"]
         self._rentalRepository = self._state[self._stateIndex]["rentalController"]
+
+    def removeClient(self, client):
+        '''
+        :param client:  Client object
+        :return:
+        '''
+        id = self._clientRepository.getClientIdByName(client.getName())
+        self._rentalRepository.removeByClientId( id )
+        self._clientRepository.removeClient(client)
+
+    def replaceClient(self, clientOld, clientNew):
+        oldId = self._clientRepository.getClientIdByName(clientOld.getName())
+        clientOld.setManuallyClientId(oldId)
+
+        self._clientRepository.replaceClient(clientOld, clientNew)
+        self._rentalRepository.replaceClient(clientOld, clientNew)
+
+    def removeMovie(self, movie):
+        oldId = self._movieRepository.findMovie(movie)
+
+        self._movieRepository.removeMovie(movie)
+        self._rentalRepository.removeByMovieId(oldId)
+
+    def replaceMovie(self, movieOld, movieNew):
+        oldId = self._movieRepository.findMovie(movieOld)
+
+        movieOld.setManuallyMovieId(oldId)
+        self._movieRepository.replaceMovie(movieOld, movieNew)
+        self._rentalRepository.replaceMovie(movieOld, movieNew)

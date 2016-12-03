@@ -15,6 +15,9 @@ class Client:
         self._clientId = Client.idCount
         Client.idCount = Client.idCount + 1
 
+    def setManuallyClientId(self, id):
+        self._clientId = id;
+
     def getClientId(self):
         return self._clientId
 
