@@ -5,10 +5,9 @@ from movieRental.Model.client import *
 from movieRental.Utils.utils import *
 import copy
 
-class ClientController():
+class ClientRepository():
     def __init__(self):
         self._clientList = []
-        self._state = []
 
     def addClient(self, client):
         if self.findClient(client) != -1:
@@ -17,7 +16,6 @@ class ClientController():
         if(type(client) == Client):
             #print(client.getName() + " added to the client list")
             self._clientList.append(client)
-            self.saveState()
         else:
             raise TypeError("Invalid client format")
 
@@ -27,7 +25,6 @@ class ClientController():
             raise RuntimeError("Client does not exist, can't remove")
 
         self._clientList.pop(searchedIndex)
-        self.saveState()
 
     def replaceClient(self, clientOld, clientNew):
         searchedIndex = self.findClient(clientOld)
@@ -35,10 +32,9 @@ class ClientController():
             raise RuntimeError("Client does not exist")
 
         self._clientList[searchedIndex] = clientNew
-        self.saveState()
 
     def findClients(self, client):
-      result = ClientController()
+      result = ClientRepository()
 
       #Search by case-insensitive name + partial names
       for i in range(len(self._clientList)):
@@ -66,21 +62,6 @@ class ClientController():
                 return crt
 
         raise RuntimeError("Client not found")
-
-
-    def saveState(self):
-        clientListAux = copy.deepcopy(self._clientList)
-        self._state.append(clientListAux)
-
-    def restoreState(self):
-        if len(self._state) >= 2:
-            self._clientList = self._state[len(self._state)-2]
-            self._state.pop()
-        elif len(self._state) == 1:
-            self._clientList = []
-            self._state.pop()
-        else:
-            raise RuntimeError("Can't undo anymore")
 
     def __iter__(self):
         for elem in self._clientList:

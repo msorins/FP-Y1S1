@@ -4,24 +4,32 @@ from movieRental.Model.movie import *
 from movieRental.Model.client import *
 from movieRental.Model.rental import *
 
-class Tests:
-    def __init__(self, movieController, clientController, rentalController):
+from movieRental.Repository.movieRepository import *
+from movieRental.Repository.clientRepository import *
+from movieRental.Repository.rentalRepository import *
+
+import unittest
+
+setup = False
+movieController = MovieRepository()
+clientController = ClientRepository()
+rentalController = RentalRepository()
+
+class Tests(unittest.TestCase):
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+
+        global setup, movieController, clientController, rentalController
         self._movieController = movieController
         self._clientController = clientController
         self._rentalController = rentalController
 
-        self.populateValues()
-        self.addClientTest()
-        self.removeClientTest()
-        self.replaceClientTest()
-        self.addMovieTest()
-        self.removeMovieTest()
-        self.replaceMovieTest()
-        self.getMovieIdByNameTest()
-        self.rentMovieTest()
-        self.returnMovieTest()
+        if setup == False:
+            self.populateValues()
+            setup = True
 
     def populateValues(self):
+        print("POPULATIIING")
         names = ["Sorin", "Andreea", "Gheorghe", "Alex", "Lupi", "Stefan", "George", "Denis", "Sorpasc", "Costel"]
         for crt in names:
             self._clientController.addClient(Client(crt))
@@ -49,7 +57,9 @@ class Tests:
         self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName("Andreea"), self._movieController.getMovieIdByName("Vikings"),"","", "22.11.2016"))
         self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Costel"), self._movieController.getMovieIdByName("The Flash"),"1.12.2016","17.12.2016", ""))
 
-    def addClientTest(self):
+    def testaAddClientTest(self):
+        print("testA")
+        print(str(self._clientController))
         self._clientController.addClient(Client("zuckerberg"))
         assert self._clientController.findClient(Client("zuckerberg")) != -1
 
@@ -67,7 +77,11 @@ class Tests:
         except Exception as e:
             assert str(e) == "Invalid input, empty input"
 
-    def removeClientTest(self):
+        print(str(self._clientController))
+
+    def testbRemoveClientTest(self):
+        assert self._clientController.findClient(Client("zuckerberg")) != -1
+
         self._clientController.removeClient(Client("zuckerberg"))
         assert self._clientController.findClient(Client("zuckerberg")) == -1
 
@@ -85,7 +99,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Invalid input, empty input"
 
-    def replaceClientTest(self):
+    def testcReplaceClientTest(self):
         self._clientController.replaceClient(Client("zuckerberg"), Client("mark"))
         assert self._clientController.findClient(Client("zuckerberg")) == -1
         assert self._clientController.findClient(Client("mark")) != -1
@@ -106,7 +120,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Invalid input, empty input"
 
-    def getClientIdByName(self):
+    def testdGetClientIdByName(self):
         assert self._clientController.getClientIdByName("Sorin") == 0
         assert self._clientController.getClientIdByName("Andreea") == 1
         assert self._clientController.getClientIdByName("Gheorghe") == 2
@@ -115,9 +129,9 @@ class Tests:
         try:
             self._clientController.getClientIdByName("BZCWE")
         except Exception as e:
-            assert str(e) == "User not found"
+            assert str(e) == "Client not found"
 
-    def addMovieTest(self):
+    def testeAddMovieTest(self):
         self._movieController.addMovie(Movie("Titanic", "Ship...", "Drama"))
         assert self._movieController.findMovie(Movie("Titanic", "", "")) != -1
 
@@ -128,9 +142,9 @@ class Tests:
         try:
             self._movieController(Movie("", "", ""))
         except Exception as e:
-            assert str(e) == "Invalid input, empty input"
+            self.assertEqual(str(e), "Invalid input, empty input")
 
-    def removeMovieTest(self):
+    def testfRemoveMovieTest(self):
         self._movieController.removeMovie(Movie("Titanic", "", ""))
         assert self._movieController.findMovie(Movie("Titanic", "", "")) == -1
 
@@ -148,7 +162,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Invalid input, empty input"
 
-    def replaceMovieTest(self):
+    def testgReplaceMovieTest(self):
         self._movieController.addMovie(Movie("Titanic", "Ship...", "Drama"))
         self._movieController.replaceMovie(Movie("Titanic", "", ""), Movie("Titans", "boom boom boom", "action"))
         assert self._movieController.findMovie(Movie("Titans", "", ""))
@@ -167,7 +181,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Invalid input, empty input"
 
-    def getMovieIdByNameTest(self):
+    def testhGetMovieIdByNameTest(self):
         assert self._movieController.getMovieIdByName("Breaking Bad") == 0
         assert self._movieController.getMovieIdByName("Game of Thrones") == 1
         assert self._movieController.getMovieIdByName("The Walking Dead") == 2
@@ -177,7 +191,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Movie not found"
 
-    def rentMovieTest(self):
+    def testiRentMovieTest(self):
         crtLen = len(self._rentalController)
 
         self._rentalController.rentMovie(Rental(self._clientController.getClientIdByName("Sorin"), self._movieController.getMovieIdByName("Suits"), "15.11.2016", "20.11.2016", ""))
@@ -202,7 +216,7 @@ class Tests:
         except Exception as e:
             assert str(e) == "Movie not found"
 
-    def returnMovieTest(self):
+    def testjReturnMovieTest(self):
         crtLen = len(self._rentalController)
         try:
             self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName("Sorin"), self._movieController.getMovieIdByName("Suits"), "", "", "21.11.2016"))
@@ -226,5 +240,6 @@ class Tests:
             self._rentalController.returnMovie(Rental(self._clientController.getClientIdByName(""), self._movieController.getMovieIdByName("Suits"), "", "", "21.11.2016"))
         except Exception as e:
             assert str(e) == "Client not found"
+
 
 

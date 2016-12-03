@@ -1,28 +1,31 @@
 __author__ = 'sorynsoo'
 
 from movieRental.Model.movie import *
-from movieRental.Controller.movieController import *
+from movieRental.Repository.movieRepository import *
 
 from movieRental.Model.client import *
-from movieRental.Controller.clientController import *
+from movieRental.Repository.clientRepository import *
 
 from movieRental.Model.rental import *
-from movieRental.Controller.rentalController import *
+from movieRental.Repository.rentalRepository import *
 
 from movieRental.View.commandUI import *
 
 from movieRental.Tests.tests import *
 
+from movieRental.Controller.mainController import *
+
+from movieRental.PopulateDB.PopulateDB import *
+
 def initFunction():
 
-    movieControllerObj = MovieController()
-    clientControllerObj = ClientController()
-    rentalControllerObj = RentalController()
-    Tests(movieControllerObj, clientControllerObj, rentalControllerObj)
+    mainControllerObj = MainController()
+    populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
+    mainControllerObj.saveState()
 
     while 1:
         try:
-            uiObj = CommandUI(movieControllerObj, clientControllerObj, rentalControllerObj)
+            uiObj = CommandUI(mainControllerObj)
         except Exception as e:
             print(e)
 
