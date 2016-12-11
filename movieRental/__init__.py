@@ -20,9 +20,10 @@ from movieRental.PopulateDB.PopulateDB import *
 def initFunction():
 
     mainControllerObj = MainController()
-    #1populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
+    populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
     mainControllerObj.saveState("initial", 0)
 
+    #Here is the main functionality of the UI program
     while 1:
         try:
             uiObj = CommandUI(mainControllerObj)

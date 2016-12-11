@@ -6,19 +6,30 @@ __author__ = 'sorynsoo'
 
 class MainController():
     def __init__(self):
-         self._movieRepository = MovieRepository()
-         self._clientRepository = ClientRepository()
-         self._rentalRepository = RentalRepository()
+        '''
+            Instantiates Movie, Client and Rental repositories
+        '''
+        self._movieRepository = MovieRepository()
+        self._clientRepository = ClientRepository()
+        self._rentalRepository = RentalRepository()
 
-         self._stateIndex = 0
-         self._state = []
+        self._stateIndex = 0
+        self._state = []
 
     def saveState(self, idOperation, object):
+        '''
+        :param idOperation: a string with operation identifier
+        :param object: a Client or Movie object that has to be saved
+        :return:
+        '''
         self._state.append({"operation": idOperation, "object": object})
 
         self._stateIndex = len(self._state) - 1
 
     def undoState(self):
+         '''
+         :return: Self explinatory -> processes the operation of undo
+         '''
          if self._stateIndex == 0:
              raise RuntimeError("Can't undo anymore")
 
@@ -45,6 +56,9 @@ class MainController():
          self._stateIndex = self._stateIndex - 1;
 
     def redoState(self):
+        '''
+            :return: Self explinatory -> processes the operation of redo
+        '''
         if self._stateIndex == len(self._state) - 1:
             raise  RuntimeError("Can't redo anymore")
 
@@ -73,14 +87,20 @@ class MainController():
 
     def removeClient(self, client):
         '''
+        Removes a Client
         :param client:  Client object
-        :return:
+        :return: nothing
         '''
         id = self._clientRepository.getClientIdByName(client.getName())
         self._rentalRepository.removeByClientId( id )
         self._clientRepository.removeClient(client)
 
     def replaceClient(self, clientOld, clientNew):
+        '''
+        :param clientOld: client object
+        :param clientNew: client object
+        :return: Replaces clientOld with clientNEw
+        '''
         oldId = self._clientRepository.getClientIdByName(clientOld.getName())
         clientOld.setManuallyClientId(oldId)
 
@@ -88,12 +108,21 @@ class MainController():
         self._rentalRepository.replaceClient(clientOld, clientNew)
 
     def removeMovie(self, movie):
+        '''
+        :param movie: movie type Object
+        :return: removes movie object
+        '''
         oldId = self._movieRepository.findMovie(movie)
 
         self._movieRepository.removeMovie(movie)
         self._rentalRepository.removeByMovieId(oldId)
 
     def replaceMovie(self, movieOld, movieNew):
+        '''
+        :param movieOld: movie type Object
+        :param movieNew: movie type Object
+        :return: replaces movieOld with movieNew
+        '''
         oldId = self._movieRepository.findMovie(movieOld)
 
         movieOld.setManuallyMovieId(oldId)
