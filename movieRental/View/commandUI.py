@@ -13,7 +13,7 @@ class CommandUI:
         self._menu = [
             {"id" : 1, "msg": "Client commands", "final" : False, "next": [
                 {"id" : 1, "msg": "Add client", "final" : False, "next" : [
-                    { "msg" : "<name>", "final" : True, "type": "client1", "method" : self._mainController._clientRepository.addClient}
+                    { "msg" : "<name>", "final" : True, "type": "client0", "method" : self._mainController._clientRepository.addClient}
                 ]},
                 {"id" : 2, "msg": "Remove client", "final" : False, "next" : [
                     { "msg" : "<name>", "final" : True, "type": "client1", "method" : self._mainController.removeClient}
@@ -106,33 +106,47 @@ class CommandUI:
             print("\n---MENU----")
             print(str(menu[0]["msg"]))
 
+            if menu[0]["type"] == "client0":
+                clientObj = Client(input("Name: "))
+                menu[0]["method"](clientObj)
+                self._mainController.saveState("addClient", clientObj)
             if menu[0]["type"] == "client1":
-                menu[0]["method"](Client(input("Name: ")))
-                self._mainController.saveState()
+                clientObj = Client(input("Name: "))
+                menu[0]["method"](clientObj)
+                self._mainController.saveState("removeClient", clientObj)
             if menu[0]["type"] == "client2":
-                menu[0]["method"](Client(input("oldName: ")), Client(input("newName: ")))
-                self._mainController.saveState()
+                clientOldNameObj = Client(input("oldName: "))
+                clientNewNameObj = Client(input("newName: "))
+                menu[0]["method"](clientOldNameObj, clientNewNameObj)
+                self._mainController.saveState("replaceClient", {"oldName": clientOldNameObj, "newName": clientNewNameObj})
             if menu[0]["type"] == "client3":
                 print(menu[0]["method"](Client(input("Name: "))))
                 self._mainController.saveState()
             if menu[0]["type"] == "movie1":
-                menu[0]["method"](Movie(input("Title: "), input("Description: "), input("Genre: ")))
-                self._mainController.saveState()
+                movieObj = Movie(input("Title: "), input("Description: "), input("Genre: "))
+                menu[0]["method"](movieObj)
+                self._mainController.saveState("addMovie", movieObj)
             if menu[0]["type"] == "movie2":
-                menu[0]["method"](Movie(input("Title: "), "", ""))
-                self._mainController.saveState()
+                movieObj = Movie(input("Title: "), "", "")
+                movieId = self._mainController._movieRepository.findMovie(movieObj)
+                movieSavedObj = self._mainController._movieRepository.getMovieById(movieId)
+                menu[0]["method"](movieObj)
+                self._mainController.saveState("removeMovie", movieSavedObj)
             if menu[0]["type"] == "movie3":
-                menu[0]["method"](Movie(input("Replaced title: "), "", ""), Movie(input("Title: "), input("Description: "), input("Genre: ")))
-                self._mainController.saveState()
+                movieOldObj = Movie(input("Replaced title: "), "", "")
+                movieNewObj = Movie(input("Title: "), input("Description: "), input("Genre: "))
+
+                movieOldId = self._mainController._movieRepository.findMovie(movieOldObj)
+                movieOldSavedObj = self._mainController._movieRepository.getMovieById(movieOldId)
+
+                menu[0]["method"](movieOldObj, movieNewObj)
+                self._mainController.saveState("replaceMovie",{"oldMovie": movieOldSavedObj, "newMovie": movieNewObj})
             if menu[0]["type"] == "movie4":
                 print(menu[0]["method"](Movie(Utils.bypassValidation(input("Title: ")), Utils.bypassValidation(input("Description: ")), Utils.bypassValidation(input("Genre: ")))))
-                self._mainController.saveState()
             if menu[0]["type"] == "rental1":
                 menu[0]["method"](Rental(self._mainController._clientRepository.getClientIdByName(input("Client name: ")), self._mainController._movieRepository.getMovieIdByName(input("Movie name: ")), input("Rented date: "), input("Due date: "), ""))
-                self._mainController.saveState()
             if menu[0]["type"] == "rental2":
                 menu[0]["method"](Rental(self._mainController._clientRepository.getClientIdByName(input("Client name: ")), self._mainController._movieRepository.getMovieIdByName(input("Movie name: ")), "", "", str(input("Returned date: "))))
-                self._mainController.saveState()
             if menu[0]["type"] == "stats1":
                 print(self.mostRentedMoviesUI(menu[0]["method"]()))
             if menu[0]["type"] == "stats2":

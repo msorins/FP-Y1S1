@@ -40,10 +40,24 @@ class RentalRepository():
         return True
 
     def mostRentedMovies(self):
-        return sorted(self._rentedMoviesCounter.items(), key=operator.itemgetter(1), reverse = True)
+        rentedMovies = {}
+        for crt in self._rentalList:
+            try:
+                rentedMovies[crt.getMovieId()] += 1;
+            except Exception:
+                rentedMovies[crt.getMovieId()] = 1;
+
+        return sorted(rentedMovies.items(), key=operator.itemgetter(1), reverse = True)
 
     def mostActiveClients(self):
-        return sorted(self._rentedClientsCounter.items(), key=operator.itemgetter(1), reverse = True)
+        clientsWhoRented = {}
+        for crt in self._rentalList:
+            try:
+                clientsWhoRented[crt.getClientId()] += 1;
+            except Exception:
+                clientsWhoRented[crt.getClientId()] = 1;
+
+        return sorted(clientsWhoRented.items(), key=operator.itemgetter(1), reverse = True)
 
     def rentalsAndMoviesCurrentlyRented(self):
         rtrn = {}
@@ -98,7 +112,10 @@ class RentalRepository():
             i = i +1
 
         #Delete the ClientsCounter
-        del(self._rentedClientsCounter[clientId])
+        try:
+            del(self._rentedClientsCounter[clientId])
+        except Exception as e:
+            pass
 
     def replaceClient(self, clientOld, clientNew):
         '''
@@ -113,9 +130,12 @@ class RentalRepository():
                 self._rentalList[i].setClientId(clientNew.getClientId())
 
         #change the ids in rentedClientsCounter
-        aux = self._rentedClientsCounter[clientOld.getClientId()]
-        del(self._rentedClientsCounter[clientOld.getClientId()])
-        self._rentedClientsCounter[clientNew.getClientId()] = aux
+        try:
+            aux = self._rentedClientsCounter[clientOld.getClientId()]
+            del(self._rentedClientsCounter[clientOld.getClientId()])
+            self._rentedClientsCounter[clientNew.getClientId()] = aux
+        except Exception as e:
+            pass
 
     def removeByMovieId(self, movieId):
         i = 0
@@ -126,7 +146,10 @@ class RentalRepository():
             i = i +1
 
         #Delete the MoviesCounter
-        del(self._rentedMoviesCounter[movieId])
+        try:
+            del(self._rentedMoviesCounter[movieId])
+        except Exception:
+            pass
 
     def replaceMovie(self, movieOld, movieNew):
 
@@ -134,13 +157,12 @@ class RentalRepository():
             if self._rentalList[i].getMovieId() == movieOld.getMovieId():
                 self._rentalList[i].setMovieId(movieOld.getMovieId())
 
-         aux = self._rentedMoviesCounter[movieOld.getMovieId()]
-         del(self._rentedMoviesCounter[movieOld.getMovieId()])
-
-         self._rentedMoviesCounter[movieNew.getMovieId()] = aux
-
-
-
+         try:
+            aux = self._rentedMoviesCounter[movieOld.getMovieId()]
+            del(self._rentedMoviesCounter[movieOld.getMovieId()])
+            self._rentedMoviesCounter[movieNew.getMovieId()] = aux
+         except Exception:
+             pass
 
     def __str__(self):
         msg = "\nCLIENT ID | MOVIE ID | RENTED DATE | DUE DATE | RETURNED DATE\n"

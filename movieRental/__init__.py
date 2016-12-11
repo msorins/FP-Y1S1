@@ -20,8 +20,8 @@ from movieRental.PopulateDB.PopulateDB import *
 def initFunction():
 
     mainControllerObj = MainController()
-    populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
-    mainControllerObj.saveState()
+    #1populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
+    mainControllerObj.saveState("initial", 0)
 
     while 1:
         try:

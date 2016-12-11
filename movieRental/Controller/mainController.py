@@ -13,31 +13,63 @@ class MainController():
          self._stateIndex = 0
          self._state = []
 
-    def saveState(self):
-        movieControllerAux = copy.deepcopy(self._movieRepository)
-        clientControllerAux = copy.deepcopy(self._clientRepository)
-        rentalControllerAux = copy.deepcopy(self._rentalRepository)
-        self._state.append({"movieController": movieControllerAux, "clientController": clientControllerAux, "rentalController": rentalControllerAux})
+    def saveState(self, idOperation, object):
+        self._state.append({"operation": idOperation, "object": object})
 
-        self._stateIndex = len(self._state) -1
+        self._stateIndex = len(self._state) - 1
 
     def undoState(self):
          if self._stateIndex == 0:
              raise RuntimeError("Can't undo anymore")
 
+         if(self._state[self._stateIndex]["operation"] == "addClient"):
+             self.removeClient(self._state[self._stateIndex]["object"])
+
+         if (self._state[self._stateIndex]["operation"] == "removeClient"):
+             self._clientRepository.addClient(self._state[self._stateIndex]["object"])
+
+         if (self._state[self._stateIndex]["operation"] == "replaceClient"):
+             self.replaceClient(self._state[self._stateIndex]["object"]["newName"],
+                                self._state[self._stateIndex]["object"]["oldName"])
+
+         if (self._state[self._stateIndex]["operation"] == "addMovie"):
+             self.removeMovie(self._state[self._stateIndex]["object"])
+
+         if (self._state[self._stateIndex]["operation"] == "removeMovie"):
+             self._movieRepository.addMovie(self._state[self._stateIndex]["object"])
+
+         if (self._state[self._stateIndex]["operation"] == "replaceMovie"):
+             self.replaceMovie(self._state[self._stateIndex]["object"]["newMovie"],
+                                self._state[self._stateIndex]["object"]["oldMovie"])
+
          self._stateIndex = self._stateIndex - 1;
-         self._movieRepository = self._state[self._stateIndex]["movieController"]
-         self._clientRepository = self._state[self._stateIndex]["clientController"]
-         self._rentalRepository = self._state[self._stateIndex]["rentalController"]
 
     def redoState(self):
         if self._stateIndex == len(self._state) - 1:
             raise  RuntimeError("Can't redo anymore")
 
         self._stateIndex = self._stateIndex + 1;
-        self._movieRepository = self._state[self._stateIndex]["movieController"]
-        self._clientRepository = self._state[self._stateIndex]["clientController"]
-        self._rentalRepository = self._state[self._stateIndex]["rentalController"]
+
+        if (self._state[self._stateIndex]["operation"] == "addClient"):
+            self._clientRepository.addClient(self._state[self._stateIndex]["object"])
+            self.removeClient(self._state[self._stateIndex]["object"])
+
+        if (self._state[self._stateIndex]["operation"] == "removeClient"):
+            self.removeClient(self._state[self._stateIndex]["object"])
+
+        if (self._state[self._stateIndex]["operation"] == "replaceClient"):
+            self.replaceClient(self._state[self._stateIndex]["object"]["oldName"],
+                               self._state[self._stateIndex]["object"]["newName"])
+
+        if (self._state[self._stateIndex]["operation"] == "addMovie"):
+            self._movieRepository.addMovie(self._state[self._stateIndex]["object"])
+
+        if (self._state[self._stateIndex]["operation"] == "removeMovie"):
+            self.removeMovie(self._state[self._stateIndex]["object"])
+
+        if (self._state[self._stateIndex]["operation"] == "replaceMovie"):
+            self.replaceMovie(self._state[self._stateIndex]["object"]["oldMovie"],
+                              self._state[self._stateIndex]["object"]["newMovie"])
 
     def removeClient(self, client):
         '''
