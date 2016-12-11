@@ -66,7 +66,6 @@ class MainController():
 
         if (self._state[self._stateIndex]["operation"] == "addClient"):
             self._clientRepository.addClient(self._state[self._stateIndex]["object"])
-            self.removeClient(self._state[self._stateIndex]["object"])
 
         if (self._state[self._stateIndex]["operation"] == "removeClient"):
             self.removeClient(self._state[self._stateIndex]["object"])
