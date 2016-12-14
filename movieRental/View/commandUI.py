@@ -158,6 +158,7 @@ class CommandUI:
             if menu[0]["type"] == "undo" or menu[0]["type"] == "redo":
                  menu[0]["method"]()
 
+            self._mainController.saveToRepository()
             self.showMenu(self._menu)
 
     def validateCommandNumber(self, menu, command):

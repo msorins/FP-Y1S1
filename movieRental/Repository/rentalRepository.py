@@ -239,3 +239,7 @@ class RentalRepository():
         :return: the number of elements in the rentalList
         '''
         return len(self._rentalList)
+
+    def __iter__(self):
+        for elem in self._rentalList:
+            yield elem

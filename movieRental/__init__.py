@@ -17,10 +17,13 @@ from movieRental.Controller.mainController import *
 
 from movieRental.PopulateDB.PopulateDB import *
 
+from movieRental.Utils.appsettings import *
+
 def initFunction():
 
-    mainControllerObj = MainController()
-    populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
+    settingsObj = Settings()
+    mainControllerObj = MainController(settingsObj)
+    #populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
     mainControllerObj.saveState("initial", 0)
 
     #Here is the main functionality of the UI program

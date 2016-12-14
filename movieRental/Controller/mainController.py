@@ -2,19 +2,35 @@ import copy
 from movieRental.Repository.movieRepository import *
 from movieRental.Repository.clientRepository import *
 from movieRental.Repository.rentalRepository import *
+from movieRental.Repository.fileRepository import *
+from movieRental.Repository.jsonRepository import *
+from movieRental.Repository.binaryRepository import *
+
 __author__ = 'sorynsoo'
 
 class MainController():
-    def __init__(self):
+    def __init__(self, settings):
         '''
             Instantiates Movie, Client and Rental repositories
         '''
+        self._stateIndex = 0
+        self._state = []
+        self._settingsObj = settings
+
         self._movieRepository = MovieRepository()
         self._clientRepository = ClientRepository()
         self._rentalRepository = RentalRepository()
 
-        self._stateIndex = 0
-        self._state = []
+        if self._settingsObj.getSettings("repository") == "file":
+            self._dataSourceRepository = FileRepository()
+        if self._settingsObj.getSettings("repository") == "pickle":
+            self._dataSourceRepository = BinaryRepository()
+        if self._settingsObj.getSettings("repository") == "json":
+            self._dataSourceRepository = JsonRepository()
+
+
+        self.loadFromRepository()
+
 
     def saveState(self, idOperation, object):
         '''
@@ -25,6 +41,16 @@ class MainController():
         self._state.append({"operation": idOperation, "object": object})
 
         self._stateIndex = len(self._state) - 1
+
+    def saveToRepository(self):
+        self._dataSourceRepository.save(self._clientRepository, "Client", self._settingsObj.getSettings("clientRepositoryPath"))
+        self._dataSourceRepository.save(self._movieRepository, "Movie", self._settingsObj.getSettings("movieRepositoryPath"))
+        self._dataSourceRepository.save(self._rentalRepository, "Rental", self._settingsObj.getSettings("rentalRepositoryPath"))
+
+    def loadFromRepository(self):
+        self._clientRepository._clientList =  self._dataSourceRepository.load("Client", self._settingsObj.getSettings("clientRepositoryPath"))
+        self._movieRepository._movieList = self._dataSourceRepository.load("Movie", self._settingsObj.getSettings("movieRepositoryPath"))
+        self._rentalRepository._rentalList = self._dataSourceRepository.load("Rental", self._settingsObj.getSettings("rentalRepositoryPath"))
 
     def undoState(self):
          '''

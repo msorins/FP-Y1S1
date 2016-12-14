@@ -32,6 +32,12 @@ class Rental():
         self._rentalId = Rental.idCount
         Rental.idCount = Rental.idCount + 1
 
+    def setManuallyRentalId(self, id):
+        '''
+        :param id: integer
+        '''
+        self._rentalId = id
+
     def getRentalId(self):
         '''
         Getter
