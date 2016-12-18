@@ -5,6 +5,7 @@ from movieRental.Repository.rentalRepository import *
 from movieRental.Repository.fileRepository import *
 from movieRental.Repository.jsonRepository import *
 from movieRental.Repository.binaryRepository import *
+from movieRental.Repository.sqlRepository import *
 
 __author__ = 'sorynsoo'
 
@@ -27,6 +28,8 @@ class MainController():
             self._dataSourceRepository = BinaryRepository()
         if self._settingsObj.getSettings("repository") == "json":
             self._dataSourceRepository = JsonRepository()
+        if self._settingsObj.getSettings("repository") == "sql":
+            self._dataSourceRepository = SqlRepository()
 
 
         self.loadFromRepository()
@@ -43,11 +46,15 @@ class MainController():
         self._stateIndex = len(self._state) - 1
 
     def saveToRepository(self):
+        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !=json and self._settingsObj.getSettings("repository") != "sql":
+            return
         self._dataSourceRepository.save(self._clientRepository, "Client", self._settingsObj.getSettings("clientRepositoryPath"))
         self._dataSourceRepository.save(self._movieRepository, "Movie", self._settingsObj.getSettings("movieRepositoryPath"))
         self._dataSourceRepository.save(self._rentalRepository, "Rental", self._settingsObj.getSettings("rentalRepositoryPath"))
 
     def loadFromRepository(self):
+        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !=json and self._settingsObj.getSettings("repository") != "sql":
+            return
         self._clientRepository._clientList =  self._dataSourceRepository.load("Client", self._settingsObj.getSettings("clientRepositoryPath"))
         self._movieRepository._movieList = self._dataSourceRepository.load("Movie", self._settingsObj.getSettings("movieRepositoryPath"))
         self._rentalRepository._rentalList = self._dataSourceRepository.load("Rental", self._settingsObj.getSettings("rentalRepositoryPath"))
