@@ -1,0 +1,10 @@
+1,Mircea Sorin,6,10
+2,Mitica Dorinel,5,8
+3,Cucu Macau,5,7
+4,Gigi Gigel,5,7
+5,Andrei marian,10,10
+6,Andreea Lupascu,15,10
+7,Dogar Dogarescu,4,5
+8,Pantofar Petrescu,9,7
+9,Pop Ioana,10,10
+10,Liviu Rebreanu,25,10
