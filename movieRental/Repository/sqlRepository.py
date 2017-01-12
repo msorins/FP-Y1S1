@@ -5,9 +5,16 @@ import inspect
 import pickle
 import sqlite3
 
+from movieRental.iterableDataStruct.IterableDataStruct import IterableDataStruct
+
+
 class SqlRepository():
     def __init__(self):
         self._sqlConnection = sqlite3.connect('sqlMovieRental.db')
+
+        #self._sqlConnection.execute("DROP TABLE Client")
+        #self._sqlConnection.execute("DROP TABLE Movie")
+        #self._sqlConnection.execute("DROP TABLE Rental")
 
         self._sqlConnection.execute("CREATE TABLE IF NOT EXISTS Client(`id` int(11) NOT NULL, `name` text NOT NULL);")
         self._sqlConnection.execute("CREATE TABLE IF NOT EXISTS Movie ( `movieId` INT NOT NULL , `title` TEXT NOT NULL , `description` TEXT NOT NULL , `genre` TEXT NOT NULL );")
@@ -52,7 +59,7 @@ class SqlRepository():
     def load(self, type, path):
         self._sqlConnection = sqlite3.connect('sqlMovieRental.db')
 
-        objectsList = []
+        objectsList = IterableDataStruct()
         if type == "Client":
             cursor = self._sqlConnection.execute("SELECT * FROM `Client`")
             for row in cursor:

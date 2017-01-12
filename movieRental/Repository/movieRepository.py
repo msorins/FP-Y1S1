@@ -1,4 +1,5 @@
 from movieRental.Model.movie import *
+from movieRental.iterableDataStruct.IterableDataStruct import *
 import copy
 
 class MovieRepository():
@@ -6,7 +7,7 @@ class MovieRepository():
         '''
         Instantiates the MovieRepository with an empty list of movies
         '''
-        self._movieList = []
+        self._movieList = IterableDataStruct()
 
     def addMovie(self, movie):
         '''

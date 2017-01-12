@@ -3,6 +3,7 @@ __author__ = 'sorynsoo'
 
 from movieRental.Model.client import *
 from movieRental.Utils.utils import *
+from movieRental.iterableDataStruct.IterableDataStruct import *
 import copy
 
 class ClientRepository():
@@ -10,7 +11,7 @@ class ClientRepository():
         '''
         Instantiate the class with an empty lists of clients
         '''
-        self._clientList = []
+        self._clientList = IterableDataStruct()
 
     def addClient(self, client):
         '''

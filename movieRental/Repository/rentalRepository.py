@@ -1,5 +1,6 @@
 __author__ = 'sorynsoo'
 from movieRental.Model.rental import *
+from movieRental.iterableDataStruct.IterableDataStruct import *
 import operator
 import copy
 
@@ -8,10 +9,10 @@ class RentalRepository():
         '''
         Instantiate the Repo list
         '''
-        self._rentalList = []
+        self._rentalList = IterableDataStruct()
         self._rentedMoviesCounter = {}
         self._rentedClientsCounter = {}
-        self._state = []
+        self._state = IterableDataStruct()
 
     def rentMovie(self, rental):
         '''

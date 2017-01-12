@@ -5,6 +5,9 @@ from movieRental.Model.rental import *
 import inspect
 import pickle
 
+from movieRental.iterableDataStruct.IterableDataStruct import IterableDataStruct
+
+
 class BinaryRepository():
     def __init__(self):
         pass
@@ -27,7 +30,7 @@ class BinaryRepository():
             print(e)
 
     def load(self, type, path):
-        returnedObj = []
+        returnedObj = IterableDataStruct()
         path = path + ".pickle"
         try:
             with open(path, "rb") as file:

@@ -3,6 +3,7 @@ import json
 from movieRental.Model.client import *
 from movieRental.Model.movie import *
 from movieRental.Model.rental import *
+from movieRental.iterableDataStruct.IterableDataStruct import *
 import inspect
 
 class JsonRepository():
@@ -37,7 +38,7 @@ class JsonRepository():
 
     def load(self, type, path):
         path = path + ".json"
-        objectsList = []
+        objectsList = IterableDataStruct()
         try:
             with open(path) as file:
                 for line in file:

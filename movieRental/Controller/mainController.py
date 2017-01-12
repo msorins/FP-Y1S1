@@ -15,7 +15,7 @@ class MainController():
             Instantiates Movie, Client and Rental repositories
         '''
         self._stateIndex = 0
-        self._state = []
+        self._state = IterableDataStruct()
         self._settingsObj = settings
 
         self._movieRepository = MovieRepository()
@@ -46,14 +46,14 @@ class MainController():
         self._stateIndex = len(self._state) - 1
 
     def saveToRepository(self):
-        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !=json and self._settingsObj.getSettings("repository") != "sql":
+        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !="json" and self._settingsObj.getSettings("repository") != "sql":
             return
         self._dataSourceRepository.save(self._clientRepository, "Client", self._settingsObj.getSettings("clientRepositoryPath"))
         self._dataSourceRepository.save(self._movieRepository, "Movie", self._settingsObj.getSettings("movieRepositoryPath"))
         self._dataSourceRepository.save(self._rentalRepository, "Rental", self._settingsObj.getSettings("rentalRepositoryPath"))
 
     def loadFromRepository(self):
-        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !=json and self._settingsObj.getSettings("repository") != "sql":
+        if self._settingsObj.getSettings("repository") != "file" and self._settingsObj.getSettings("repository") != "pickle" and self._settingsObj.getSettings("repository") !="json" and self._settingsObj.getSettings("repository") != "sql":
             return
         self._clientRepository._clientList =  self._dataSourceRepository.load("Client", self._settingsObj.getSettings("clientRepositoryPath"))
         self._movieRepository._movieList = self._dataSourceRepository.load("Movie", self._settingsObj.getSettings("movieRepositoryPath"))

@@ -19,6 +19,9 @@ from movieRental.PopulateDB.PopulateDB import *
 
 from movieRental.Utils.appsettings import *
 
+from movieRental.iterableDataStruct.IterableDataStruct import *
+
+
 def initFunction():
 
     settingsObj = Settings()
@@ -30,10 +33,10 @@ def initFunction():
     while 1:
         try:
             uiObj = CommandUI(mainControllerObj)
+
         except Exception as e:
             print(e)
 
 
 if __name__ == "__main__":
     initFunction()
-

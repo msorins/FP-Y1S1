@@ -22,7 +22,7 @@ class CommandUI:
                     { "msg" : "<oldName> <newName>", "final" : True, "type": "client2", "method" : self._mainController.replaceClient}
                 ]},
                 {"id" : 4, "msg": "Find client", "final": False, "next" : [
-                    { "msg" : "<name>", "final" : True, "type": "client3", "method" : self._mainController._clientRepository.findClients}
+                    { "msg" : "<name>", "final" : True, "type": "client4", "method" : self._mainController._clientRepository.findClients}
                 ]},
                 {"id" : 5, "msg": "Print", "final" : True, "type" : "printClients"}
             ]},
@@ -122,6 +122,8 @@ class CommandUI:
             if menu[0]["type"] == "client3":
                 print(menu[0]["method"](Client(input("Name: "))))
                 self._mainController.saveState()
+            if menu[0]["type"] == "client4":
+                print(menu[0]["method"](Client(input("Name: "))))
             if menu[0]["type"] == "movie1":
                 movieObj = Movie(input("Title: "), input("Description: "), input("Genre: "))
                 menu[0]["method"](movieObj)

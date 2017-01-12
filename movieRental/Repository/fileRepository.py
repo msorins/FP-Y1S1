@@ -4,6 +4,9 @@ from movieRental.Model.movie import *
 from movieRental.Model.rental import *
 import inspect
 
+from movieRental.iterableDataStruct.IterableDataStruct import IterableDataStruct
+
+
 class FileRepository():
     def __init__(self):
         pass
@@ -40,7 +43,7 @@ class FileRepository():
 
 
     def load(self, type, path):
-        objectsList = []
+        objectsList = IterableDataStruct()
         try:
             with open(path) as file:
                 for line in file:
