@@ -97,6 +97,9 @@ class RentalRepository():
 
         return rtrn
 
+    def sortF(self, x):
+        return ((x.getReturnedDate() - x.getDueDate()).days)
+
     def currentlyRentedUnreturnedMovies(self):
         '''
         :return: a list containing all the movies that are currently rented and unreturned
@@ -109,8 +112,8 @@ class RentalRepository():
             if crt.getReturnedDate() > crt.getDueDate():
                     rtrn.append(crt)
 
-        auxObj = sorted(rtrn, key = lambda x: ((x.getReturnedDate() - x.getDueDate()).days), reverse = True)
-
+        #auxObj = sorted(rtrn, key = lambda x: ((x.getReturnedDate() - x.getDueDate()).days), reverse = True)
+        auxObj = IterableDataStruct().sort(rtrn, self.sortF)
         return auxObj
 
     def incrementRentedMoviesCounter(self, rental):

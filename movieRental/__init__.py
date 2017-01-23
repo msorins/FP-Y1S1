@@ -26,7 +26,7 @@ def initFunction():
 
     settingsObj = Settings()
     mainControllerObj = MainController(settingsObj)
-    #populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
+    populateDbObj = PopulateDB(mainControllerObj._movieRepository, mainControllerObj._clientRepository, mainControllerObj._rentalRepository)
     mainControllerObj.saveState("initial", 0)
 
     #Here is the main functionality of the UI program

@@ -135,7 +135,7 @@ def delStudentCommand(studentList, cmd):
     Delete a student
     '''
     if deleteStudent(studentList, cmd[0]) == False:
-        print("Invalid data. No student was deleted")
+        print("Invalid Data. No student was deleted")
 
 def showStudentCommand(studentList, cmd):
     '''
@@ -298,7 +298,7 @@ def addStudent(studentList, student):
     Adds the student 'student' to the list of students studentList, if there is no other student
     with the same id.
     Input: studentList - the list of students
-           student - a tuple that represents the student'student data
+           student - a tuple that represents the student'student Data
     Output: studentList' - a list of students, studentList' = studentList U {student} (student is added to the list studentList)
             Returns true if the student was added and false, otherwise.
     """

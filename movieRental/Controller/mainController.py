@@ -32,7 +32,7 @@ class MainController():
             self._dataSourceRepository = SqlRepository()
 
 
-        self.loadFromRepository()
+        #self.loadFromRepository()
 
 
     def saveState(self, idOperation, object):
